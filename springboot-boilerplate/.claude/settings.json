@@ -1,0 +1,62 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.danvega.dev)",
+      "WebFetch(domain:javadoc.io)",
+      "WebFetch(domain:docs.openrewrite.org)",
+      "Bash(./gradlew compileJava:*)",
+      "Bash(./gradlew checkstyleMain pmdMain:*)",
+      "Bash(jar tf:*)",
+      "Bash(jar xf:*)",
+      "Bash(javap:*)",
+      "Bash(./gradlew checkstyleMain:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:docs.pmd-code.org)",
+      "Bash(./gradlew build:*)",
+      "mcp__jetbrains__list_directory_tree",
+      "mcp__jetbrains__get_file_text_by_path",
+      "mcp__jetbrains__find_files_by_glob",
+      "mcp__jetbrains__get_file_problems",
+      "mcp__jetbrains__build_project",
+      "mcp__jetbrains__find_files_by_name_keyword",
+      "mcp__jetbrains__execute_terminal_command",
+      "Bash(./gradlew clean test:*)",
+      "Bash(claude mcp list:*)",
+      "mcp__jetbrains__reformat_file",
+      "WebSearch",
+      "WebFetch(domain:docs.spring.io)",
+      "WebFetch(domain:spring.io)",
+      "WebFetch(domain:mybatis.org)",
+      "WebFetch(domain:querydsl.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(./gradlew test:*)",
+      "mcp__jetbrains__create_new_file",
+      "mcp__jetbrains__replace_text_in_file"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.java ]]; then printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"[포맷 검증] Java 파일 수정됨: %s — reformat_file 후 checkstyleMain pmdMain 검증 필요\"}}' \"$(basename \"$file\")\"; fi; exit 0"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | jq -r '.tool_input.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -q 'git commit'; then if ./gradlew checkstyleMain pmdMain; then exit 0; else echo '정적 분석 실패 — checkstyleMain pmdMain 오류를 수정 후 다시 커밋하세요' >&2; exit 2; fi; else exit 0; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
