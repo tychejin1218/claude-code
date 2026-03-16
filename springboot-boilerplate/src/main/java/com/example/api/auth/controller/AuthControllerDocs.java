@@ -15,8 +15,45 @@ import org.springframework.http.MediaType;
 /**
  * 인증 Controller API 문서
  */
-@Tag(name = "인증", description = "로그인, 로그아웃, 토큰 재발급 API")
+@Tag(name = "인증", description = "회원가입, 로그인, 로그아웃, 토큰 재발급 API")
 public interface AuthControllerDocs {
+
+  /**
+   * 회원가입
+   *
+   * @param request 회원가입 요청 (email, name, password)
+   * @return 토큰 응답
+   */
+  @Operation(summary = "회원가입", description = "이메일/이름/비밀번호로 회원가입하고 accessToken/refreshToken을 발급합니다.")
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "회원가입 성공",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = AuthDto.TokenResponse.class),
+              examples = @ExampleObject(value = """
+                  {
+                    "statusCode": "200",
+                    "message": "성공",
+                    "data": {
+                      "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiJ9..."
+                    }
+                  }
+                  """)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "409",
+          description = "이미 사용 중인 이메일",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ErrorResponse.class)
+          )
+      )
+  })
+  BaseResponse<AuthDto.TokenResponse> register(AuthDto.RegisterRequest request);
 
   /**
    * 로그인

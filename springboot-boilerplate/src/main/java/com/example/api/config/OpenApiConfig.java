@@ -72,5 +72,16 @@ public class OpenApiConfig {
         .build();
   }
 
-
+  /**
+   * 할 일 모듈 API 그룹
+   *
+   * @return GroupedOpenApi 인스턴스
+   */
+  @Bean
+  public GroupedOpenApi todoApi() {
+    return GroupedOpenApi.builder()
+        .group("할 일 API")
+        .pathsToMatch("/todos/**")
+        .build();
+  }
 }

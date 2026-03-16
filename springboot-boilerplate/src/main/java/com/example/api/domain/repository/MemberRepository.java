@@ -20,6 +20,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   Optional<Member> findByEmail(String email);
 
   /**
+   * 이메일 존재 여부 확인
+   *
+   * @param email 이메일
+   * @return 존재하면 true
+   */
+  boolean existsByEmail(String email);
+
+  /**
    * 이름·이메일 부분 일치 회원 목록 조회
    *
    * @param name  이름 검색어

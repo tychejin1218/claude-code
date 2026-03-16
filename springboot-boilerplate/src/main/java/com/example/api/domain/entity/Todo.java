@@ -43,4 +43,26 @@ public class Todo {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  /**
+   * 할 일 완료 처리
+   */
+  public void complete() {
+    this.completed = true;
+  }
+
+  /**
+   * 할 일 생성
+   *
+   * @param title  할 일 내용
+   * @param member 소유 회원
+   * @return Todo
+   */
+  public static Todo of(String title, Member member) {
+    return Todo.builder()
+        .title(title)
+        .completed(false)
+        .member(member)
+        .build();
+  }
 }

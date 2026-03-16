@@ -6,6 +6,7 @@ import com.example.api.common.exception.ApiException;
 import com.example.api.common.type.ApiStatus;
 import com.example.api.common.type.RedisKeys;
 import com.example.api.config.jwt.JwtTokenProvider;
+import com.example.api.domain.entity.Member;
 import com.example.api.domain.repository.MemberRepository;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,22 @@ public class AuthService {
   private final RedisComponent redisComponent;
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
+
+  /**
+   * 회원가입 - 이메일 중복 확인 후 저장 및 JWT 발급
+   *
+   * @param request 회원가입 요청 (email, name, password)
+   * @return 토큰 응답
+   */
+  @Transactional
+  public AuthDto.TokenResponse register(AuthDto.RegisterRequest request) {
+    if (memberRepository.existsByEmail(request.getEmail())) {
+      throw new ApiException(HttpStatus.CONFLICT, ApiStatus.DUPLICATED_REQUEST);
+    }
+    String encodedPassword = passwordEncoder.encode(request.getPassword());
+    memberRepository.save(Member.of(request.getEmail(), request.getName(), encodedPassword));
+    return issueTokenPair(request.getEmail());
+  }
 
   /**
    * 로그인 - 이메일/비밀번호 검증 후 JWT 발급

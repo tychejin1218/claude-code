@@ -21,6 +21,13 @@ public class AuthController implements AuthControllerDocs {
   private final AuthService authService;
 
   @Override
+  @PostMapping("/register")
+  public BaseResponse<AuthDto.TokenResponse> register(
+      @RequestBody @Valid AuthDto.RegisterRequest request) {
+    return BaseResponse.ok(authService.register(request));
+  }
+
+  @Override
   @PostMapping("/login")
   public BaseResponse<AuthDto.TokenResponse> login(
       @RequestBody @Valid AuthDto.LoginRequest request) {
