@@ -1,2 +1,4 @@
-// 작성한 핸들러 모두 추가
-export const handlers = [];
+import { authHandlers } from '@/features/auth/mocks/authHandlers';
+import { todoHandlers } from '@/features/todo/mocks/todoHandlers';
+
+export const handlers = [...authHandlers, ...todoHandlers];

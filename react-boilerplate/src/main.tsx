@@ -7,7 +7,7 @@ import QueryProvider from './app/providers/QueryProvider.tsx';
 import ErrorBoundary from './shared/components/common/ErrorBoundary';
 
 const enableMocking = async () => {
-  if (import.meta.env.VITE_APP_ENV === 'local') {
+  if (import.meta.env.VITE_ENABLE_MSW === 'true') {
     const { worker } = await import('./mocks/browser.ts');
     return worker.start({ onUnhandledRequest: 'bypass' });
   }

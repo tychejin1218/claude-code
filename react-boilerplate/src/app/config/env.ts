@@ -5,6 +5,10 @@ import { z } from 'zod';
 const envSchema = z.object({
   VITE_APP_ENV: z.enum(['local', 'dev', 'stg', 'prd']),
   VITE_API_BASE_URL: z.string().url(),
+  VITE_ENABLE_MSW: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
 });
 
 export const env = envSchema.parse(import.meta.env);

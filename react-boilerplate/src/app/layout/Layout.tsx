@@ -18,9 +18,7 @@ const Layout = () => {
           <h1 className="text-xl font-bold">React Boilerplate</h1>
           {user && (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
-                {user.name} ({user.role})
-              </span>
+              <span className="text-sm text-gray-600">{user.name}</span>
               <button className="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300" onClick={onClickLogout}>
                 로그아웃
               </button>
