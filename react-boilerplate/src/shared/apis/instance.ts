@@ -1,0 +1,57 @@
+import axios from 'axios';
+import type { ErrorResponse } from '@/shared/types/api';
+import { ERROR_MESSAGES } from '@/shared/constants/messages';
+// 예외: 인증 인터셉터(cross-cutting concern)로 app 레이어 참조
+import { useUserStore } from '@/app/stores/useUserStore';
+import { env } from '@/app/config/env';
+
+const api = axios.create({
+  baseURL: env.VITE_API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+/** 요청 인터셉터: Authorization 헤더 주입 */
+api.interceptors.request.use(
+  (config) => {
+    const { accessToken } = useUserStore.getState();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+/** 응답 인터셉터: 공통 에러 처리 */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response) {
+      const { status, data } = error.response;
+      const errorResponse = data as ErrorResponse;
+
+      switch (status) {
+        case 401:
+          console.error(`[401] ${ERROR_MESSAGES.UNAUTHORIZED}`, errorResponse);
+          useUserStore.getState().clearUser();
+          window.location.href = '/';
+          break;
+        case 403:
+          console.error(`[403] ${ERROR_MESSAGES.FORBIDDEN}`, errorResponse);
+          break;
+        case 500:
+          console.error(`[500] ${ERROR_MESSAGES.SERVER_ERROR}`, errorResponse);
+          break;
+      }
+
+      return Promise.reject(errorResponse);
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export default api;
