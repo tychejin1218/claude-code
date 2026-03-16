@@ -26,6 +26,11 @@ dist/
 # JetBrains IDE
 .idea/
 
+# Gradle
+.gradle/
+build/
+src/main/generated/
+
 # Unit test reports
 TEST*.xml
 

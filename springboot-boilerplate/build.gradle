@@ -1,0 +1,253 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.14"
+}
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    archiveBaseName = 'app'
+    archiveFileName = 'app.jar'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    coverageEnabled = project.hasProperty("coverage")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    // Jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    // Database
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'software.aws.rds:aws-mysql-jdbc:1.1.15'
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-core'
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // ModelMapper
+    implementation 'org.modelmapper:modelmapper:3.2.4'
+
+    // AWS
+    implementation 'software.amazon.awssdk:core:2.33.7'
+    implementation "software.amazon.awssdk:kms:2.33.7"
+    implementation "software.amazon.awssdk:s3:2.33.7"
+
+    // OAuth2 Client (M365 SSO)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // JJWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Apache Commons Lang
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    // SpringDoc OpenAPI (Swagger UI) — local/dev 전용
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
+}
+
+// 테스트 및 JaCoCo 실행을 coverage 옵션(-Pcoverage)으로 제어
+tasks.withType(Test).configureEach {
+
+    // JUnit 5 플랫폼 사용 (Spring Boot 기본)
+    useJUnitPlatform()
+
+    // coverage 플래그가 있을 때만 Test 태스크 활성화
+    // 예) ./gradlew clean test -Pcoverage
+    enabled = coverageEnabled
+
+    // Test 실행이 활성화된 경우에만
+    // 테스트 종료 후 JaCoCo 리포트 생성 태스크를 연결
+    if (coverageEnabled) {
+        finalizedBy jacocoTestReport
+    }
+}
+
+// Checkstyle 설정
+checkstyle {
+    configFile = file("${rootDir}/config/checkstyle/google-checkstyle.xml")
+    configProperties = [
+            'suppressionFile': rootProject.file("config/checkstyle/checkstyle-suppressions.xml")
+    ]
+    ignoreFailures = false
+    maxWarnings = 0
+    toolVersion = '12.3.1'
+    reportsDir = layout.buildDirectory.dir("checkstyle-output").get().asFile
+}
+
+checkstyleMain {
+    reports {
+        xml.required = true
+        xml.outputLocation = file("${checkstyle.reportsDir}/checkstyle-report.xml")
+    }
+}
+
+// PMD 설정
+pmd {
+    ruleSetFiles = files("${rootDir}/config/pmd/custom-ruleset.xml")
+    ruleSets = []
+    consoleOutput = true
+    ignoreFailures = false
+    toolVersion = '7.21.0'
+    reportsDir = layout.buildDirectory.dir("pmd-output").get().asFile
+}
+
+pmdMain {
+    reports {
+        xml.required = true
+        xml.outputLocation = file("${pmd.reportsDir}/pmd-report.xml")
+    }
+}
+
+// Java 컴파일 시 -Xlint:deprecation 추가
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xlint:unchecked', '-Xlint:deprecation']
+}
+
+// QueryDSL
+def querydslDir = "$projectDir/src/main/generated"
+
+sourceSets {
+    main.java.srcDirs += [querydslDir]
+}
+
+tasks.named('compileJava').configure {
+    options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+tasks.named('checkstyleMain').configure {
+    dependsOn 'compileTestJava'
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}
+
+// 테스트 커버리지 리포트 생성
+jacocoTestReport {
+
+    // coverage 옵션(-Pcoverage)이 있을 때만 실행
+    onlyIf { coverageEnabled }
+
+    // 테스트 실행 후 커버리지 리포트 생성
+    dependsOn test
+
+    // 커버리지 측정 대상에서
+    // 설정/엔티티/DTO/Generated 코드 등 비즈니스 로직이 아닌 클래스 제외
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/example/api/config/**",
+                    "com/example/api/domain/entity/**",
+                    "com/example/api/**/dto/**",
+                    "com/example/api/ApiApplication.class"
+            ])
+        }))
+    }
+
+    // HTML / XML(CI·SonarQube용) 리포트 생성
+    reports {
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("jacoco/html").get().asFile
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file("jacoco/report.xml").get().asFile
+    }
+
+    // 리포트 생성 후 커버리지 기준 검증 수행
+    finalizedBy jacocoTestCoverageVerification
+}
+
+// 커버리지 기준 미달 시 빌드 실패
+jacocoTestCoverageVerification {
+
+    // coverage 옵션(-Pcoverage)이 있을 때만 커버리지 기준 검증 수행
+    onlyIf { coverageEnabled }
+
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: [
+                "com/example/api/config/**",
+                "com/example/api/domain/entity/**",
+                "com/example/api/**/dto/**",
+                "com/example/api/ApiApplication.class"
+        ])
+    }))
+
+    violationRules {
+
+        // 전체 코드 기준 커버리지
+        rule {
+            element = 'BUNDLE'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+            }
+        }
+
+        // 핵심 클래스 기준 커버리지
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+            }
+        }
+    }
+}

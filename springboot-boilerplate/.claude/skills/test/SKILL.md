@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 시작 전 반드시 아래를 읽으세요:
 - `.claude/docs/testing.md` — 테스트 전체 가이드
-- `src/test/java/com/example/api/sample/` — 기존 테스트 패턴 참조
+- `src/test/java/{basePackage}/sample/` — 기존 테스트 패턴 참조
 - 대상 클래스 소스 코드 전체 + 직접 의존하는 클래스 읽기
 
 ## 테스트 유형 선택
@@ -69,8 +69,8 @@ assertThatThrownBy(() -> service.getXxx(request))
 ## 파일 위치
 
 ```
-src/test/java/com/example/api/{패키지}/{계층}/{클래스명}Test.java
-src/test/java/com/example/api/{패키지}/service/{클래스명}MockTest.java  ← Service Mock 전용
+src/test/java/{basePackage}/{패키지}/{계층}/{클래스명}Test.java
+src/test/java/{basePackage}/{패키지}/service/{클래스명}MockTest.java  ← Service Mock 전용
 ```
 
 ## 후처리

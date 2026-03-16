@@ -16,6 +16,8 @@ model: sonnet
 - `src/main/java/com/example/api/domain/entity/` — 기존 Entity 참조
 - `src/main/java/com/example/api/domain/repository/` — 기존 JPA Repository 참조
 
+파일을 읽은 후 **ultrathink**로 테이블 구조·인덱스 전략·연관 관계 트레이드오프를 심층 분석하세요.
+
 ## 생성 산출물
 
 1. **JPA Entity** → `src/main/java/com/example/api/domain/entity/{EntityName}.java`

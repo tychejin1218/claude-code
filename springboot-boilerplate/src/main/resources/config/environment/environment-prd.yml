@@ -1,0 +1,19 @@
+# JWT 설정
+jwt:
+  secret: change-me-prd-jwt-secret-key-must-be-at-least-256-bits-long
+  access-token-validity-ms: 7200000    # 2시간
+  refresh-token-validity-ms: 604800000 # 7일
+
+# SpringDoc 비활성화
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
+# AWS 설정
+aws:
+  s3:
+    region: ap-northeast-2
+    bucket-name: your-prd-bucket-name
+    presigned-url-expiry-minutes: 5

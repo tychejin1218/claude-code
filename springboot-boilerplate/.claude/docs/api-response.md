@@ -24,7 +24,7 @@ public BaseResponse<SampleDto.MemberResponse> getMember(@PathVariable long id) {
 {
   "statusCode": "200",
   "message": "성공",
-  "data": { "id": 1, "name": "admin", "email": "user@example.com" }
+  "data": { "id": 1, "name": "admin", "email": "admin@example.com" }
 }
 ```
 

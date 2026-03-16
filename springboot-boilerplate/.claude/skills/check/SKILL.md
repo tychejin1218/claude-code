@@ -1,19 +1,23 @@
 ---
 name: check
-description: Checkstyle + PMD 정적 분석과 Google Style 포맷 정렬을 실행합니다. 코드 생성·수정·리팩토링 완료 후 검증할 때 사용합니다.
+description: 사용자가 "check", "정적 분석", "checkstyle", "pmd", "코드 검사", "포맷 정렬"을 요청할 때 이 스킬을 사용합니다. 코드를 생성하거나 수정하거나 리팩토링했다면, 명시적으로 요청하지 않아도 반드시 이 스킬을 실행하세요. 코드 변경이 있었다면 항상 마지막 단계로 자동 실행합니다.
 argument-hint: "[파일명]"
 ---
 
 # 정적 분석 & 포맷 검증
 
-지정된 파일에 대해 코드 포맷 정렬과 정적 분석을 실행합니다.
+Google Java Style 포맷 정렬과 Checkstyle + PMD 정적 분석을 순서대로 실행합니다.
+
+포맷 정렬을 먼저 하는 이유는 Checkstyle이 들여쓰기·공백·줄 길이를 검사하기 때문에,
+정렬 없이 분석하면 실제 코드 문제가 아닌 스타일 오류가 섞여 노이즈가 발생합니다.
 
 ## 실행 순서
 
-1. JetBrains MCP `reformat_file`로 Google Java Style 자동 정렬 (`projectPath: /path/to/your/project` 항상 포함)
+1. JetBrains MCP `reformat_file`로 Google Java Style 자동 정렬
+   - `projectPath: /path/to/your/project` 항상 포함
 2. `./gradlew checkstyleMain pmdMain` 실행
-3. 오류 발생 시 내용을 분석하여 수정 후 재실행
-4. 통과 시 결과 보고
+3. 오류가 있으면 내용을 분석해 수정한 뒤 재실행
+4. 통과하면 결과 보고
 
 ---
 

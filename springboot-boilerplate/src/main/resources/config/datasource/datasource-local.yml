@@ -1,0 +1,34 @@
+# Main 데이터베이스 설정 (Docker MySQL)
+main:
+  # 데이터 소스 설정 (데이터베이스 연결을 관리하는 HikariCP 관련 설정 포함)
+  datasource:
+    driver-class-name: software.aws.rds.jdbc.mysql.Driver
+    writer-jdbc-url: jdbc:mysql://localhost:3306/boilerplate_db?serverTimezone=UTC&characterEncoding=UTF-8
+    reader-jdbc-url: jdbc:mysql://localhost:3306/boilerplate_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: boilerplate
+    password: boilerplate
+    hikari:
+      poolName: mysqlDbConnectionPool
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 10000
+      max-life-time: 300000
+      connection-test-query: SELECT 1
+  # JPA 설정
+  jpa:
+    generate-ddl: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        jdbc.time_zone: UTC
+
+# Redis 설정 (Docker Redis Standalone)
+redis:
+  stand-alone:
+    host: localhost
+    port: 6379
+    timeout: 3000

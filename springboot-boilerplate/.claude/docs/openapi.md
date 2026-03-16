@@ -68,9 +68,9 @@ public class OpenApiConfig {
   public OpenAPI openApi() {
     return new OpenAPI()
         .info(new Info()
-            .title("Backend API")
+            .title("API")
             .version("v1.0.0")
-            .description("Spring Boot 백엔드 API 문서"));
+            .description("백엔드 API 문서"));
   }
 
   /** 패키지별 GroupedOpenApi — 새 패키지 추가 시 빈 등록 */

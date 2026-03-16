@@ -1,0 +1,32 @@
+# Main 데이터베이스 설정 (AWS RDS MySQL)
+main:
+  # 데이터 소스 설정 (데이터베이스 연결을 관리하는 HikariCP 관련 설정 포함)
+  datasource:
+    driver-class-name: software.aws.rds.jdbc.mysql.Driver
+    writer-jdbc-url: jdbc:mysql:aws://your-prd-rds-writer-endpoint:3306/your_db?serverTimezone=UTC
+    reader-jdbc-url: jdbc:mysql:aws://your-prd-rds-reader-endpoint:3306/your_db?serverTimezone=UTC
+    username: ENC(your_encrypted_username)
+    password: ENC(your_encrypted_password)
+    hikari:
+      poolName: mysqlDbConnectionPool
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 10000
+      max-life-time: 300000
+      connection-test-query: SELECT 1
+  # JPA 설정
+  jpa:
+    generate-ddl: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+        jdbc.time_zone: UTC
+
+# Redis 설정
+redis:
+  cluster:
+    nodes: your-prd-redis-endpoint:6379

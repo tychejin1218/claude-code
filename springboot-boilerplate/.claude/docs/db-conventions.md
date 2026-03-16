@@ -12,7 +12,7 @@
 - 사이트별 고유한 이름 사용
 
 ```
-예시: todo
+예시: app
 ```
 
 ---
@@ -24,7 +24,7 @@
 - 데이터 양이 많을 것으로 예상되는 테이블은 파티셔닝 고려 (학습 이력, 문제 풀이 이력 등)
 
 ```
-예시: todo_user, todo_exam, todo_question
+예시: app_user, app_exam, app_question
 ```
 
 ---
@@ -62,7 +62,7 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 - 형식: `idx_<테이블명>_<일련번호(01~99)>`
 
 ```
-예시: idx_todo_user_01
+예시: idx_app_user_01
 ```
 
 ---
@@ -73,7 +73,7 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 - 단, `BIGINT AUTO_INCREMENT PRIMARY KEY` 인라인 방식 사용 시 별도 PK 제약명 생략 가능
 
 ```
-예시: pk_todo_user
+예시: pk_app_user
 ```
 
 ---
@@ -83,7 +83,7 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 - 형식: `fk_<테이블명>_<일련번호(01~99)>`
 
 ```sql
-예시: CONSTRAINT fk_todo_exam_01 FOREIGN KEY (user_id) REFERENCES todo_user(id)
+예시: CONSTRAINT fk_app_exam_01 FOREIGN KEY (user_id) REFERENCES app_user(id)
 ```
 
 ---
@@ -93,7 +93,7 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 - 형식: `uk_<테이블명>_<일련번호(01~99)>`
 
 ```sql
-예시: CONSTRAINT uk_todo_user_01 UNIQUE (login_id)
+예시: CONSTRAINT uk_app_user_01 UNIQUE (login_id)
 ```
 
 ---
@@ -103,7 +103,7 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 - 형식: `view_<테이블명>_<일련번호(01~99)>`
 
 ```
-예시: view_todo_user_01
+예시: view_app_user_01
 ```
 
 ---
@@ -121,10 +121,10 @@ modified_ts   DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP CO
 기존 프로젝트 SQL 스타일을 기준으로 작성합니다.
 
 ```sql
-DROP TABLE IF EXISTS app.todo_exam;
+DROP TABLE IF EXISTS app.app_exam;
 
 -- TABLE
-CREATE TABLE app.todo_exam (
+CREATE TABLE app.app_exam (
     id              BIGINT          AUTO_INCREMENT PRIMARY KEY COMMENT '시험지 ID',
     user_id         VARCHAR(50)     NOT NULL COMMENT '회원 ID',
     exam_nm         VARCHAR(200)    NOT NULL COMMENT '시험지명',
@@ -134,12 +134,12 @@ CREATE TABLE app.todo_exam (
     created_ts      DATETIME        DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     modified_by     VARCHAR(50)     NULL COMMENT '수정자',
     modified_ts     DATETIME        DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
-    CONSTRAINT fk_todo_exam_01 FOREIGN KEY (user_id) REFERENCES todo_user(id)
+    CONSTRAINT fk_app_exam_01 FOREIGN KEY (user_id) REFERENCES app_user(id)
 ) COMMENT = '시험지 정보';
 
 -- INDEX
-CREATE INDEX idx_todo_exam_01 ON app.todo_exam (user_id);
-CREATE INDEX idx_todo_exam_02 ON app.todo_exam (created_ts);
+CREATE INDEX idx_app_exam_01 ON app.app_exam (user_id);
+CREATE INDEX idx_app_exam_02 ON app.app_exam (created_ts);
 ```
 
 ### 작성 규칙 요약
@@ -165,7 +165,7 @@ difficulty_cd   VARCHAR(50)  NULL COMMENT '난이도 코드(공통코드: DIFFIC
 status_cd       VARCHAR(50)  NULL COMMENT '상태 코드(공통코드: EXAM_STATUS 코드 참조)',
 ```
 
-공통 코드 테이블(`todo_common_code`) 구조:
+공통 코드 테이블(`app_common_code`) 구조:
 
 ```sql
 PRIMARY KEY (code_group, code)

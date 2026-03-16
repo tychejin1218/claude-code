@@ -61,6 +61,67 @@ public class SampleDto {
 - MyBatis에서 사용 시 `@Alias` 어노테이션으로 타입 별칭 지정
 - 요청 DTO에는 `@Valid` 관련 어노테이션 (`@NotBlank`, `@NotNull`, `@Min` 등) 사용
 
+## DTO Lombok 사용 규칙
+
+DTO의 getter/setter/constructor는 직접 작성하지 않고 Lombok 어노테이션을 사용한다.
+
+`@Setter`는 **지양**하며, Jackson이 역직렬화해야 하는 경우에만 사용한다.
+- **사용**: `@RequestBody` Request DTO, 외부 JSON 파싱 DTO (Redis 등)
+- **미사용**: Response DTO (서비스에서 `from()` / builder로 직접 생성)
+
+| 클래스 유형 | 어노테이션 |
+|-----------|-----------|
+| Request DTO (`@RequestBody`) | `@Getter` `@Setter` `@Builder` `@NoArgsConstructor` `@AllArgsConstructor` |
+| 외부 JSON 파싱 DTO (Redis 등) | `@Getter` `@Setter` `@NoArgsConstructor` |
+| Response DTO (코드에서 직접 생성) | `@Getter` `@NoArgsConstructor` |
+| 불변 Request (정적 팩토리 전용) | `@Getter` (생성자는 `private`, setter 없음) |
+
+```java
+// Request DTO - Jackson @RequestBody 역직렬화
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public static class InsertRequest {
+  private String name;
+}
+
+// 외부 JSON 파싱 DTO - Redis 등 외부 데이터 역직렬화
+@Getter
+@Setter
+@NoArgsConstructor
+public static class NodeResponse {
+  private Long id;
+  private String name;
+}
+
+// Response DTO - 서비스에서 from() / builder로 직접 생성
+@Getter
+@NoArgsConstructor
+public static class MemberResponse {
+  private Long id;
+  private String name;
+
+  public static MemberResponse from(Member member) {
+    return new MemberResponse(member.getId(), member.getName());
+  }
+}
+
+// 불변 Request (정적 팩토리 패턴)
+@Getter
+public static final class SearchRequest {
+  private final Long id;
+  private final String keyword;
+
+  private SearchRequest(Long id, String keyword) { ... }
+
+  public static SearchRequest of(Long id, String keyword) {
+    return new SearchRequest(id, keyword);
+  }
+}
+```
+
 ## 정적 팩토리 메서드 네이밍
 
 DTO의 정적 팩토리 메서드는 Effective Java 관례를 따른다.

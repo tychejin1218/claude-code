@@ -11,7 +11,7 @@ Controller → Service → Repository/Mapper → Database
 
 ```
 com.example.api/
-├── AppApplication.java         # Spring Boot 진입점
+├── ApiApplication.java         # Spring Boot 진입점
 │
 ├── common/                          # 공통 패키지
 │   ├── advice/ExceptionAdvice.java  # @RestControllerAdvice 전역 예외 처리

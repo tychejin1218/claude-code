@@ -1,0 +1,70 @@
+# SERVER 설정
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    path: /error
+    whitelabel:
+      enabled: false
+  shutdown: graceful
+
+# SPRING 설정
+spring:
+  application:
+    name: springboot-boilerplate
+  web:
+    locale: ko_KR
+    resources:
+      add-mappings: false
+  messages:
+    basename: message/messages
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: local
+    group:
+      local: profiles-local
+        , logging-type-console, logging-level-local
+      dev: profiles-dev
+        , logging-type-file-absolute, logging-level-dev
+      stg: profiles-stg
+        , logging-type-file-absolute, logging-level-stg
+      prd: profiles-prd
+        , logging-type-file-absolute, logging-level-prd
+
+---
+# LOCAL 설정
+spring.config.activate.on-profile: "profiles-local"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-local.yml,
+      classpath:config/environment/environment-local.yml
+
+---
+# DEV 설정
+spring.config.activate.on-profile: "profiles-dev"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-dev.yml,
+      classpath:config/environment/environment-dev.yml
+
+---
+# STG 설정
+spring.config.activate.on-profile: "profiles-stg"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-stg.yml,
+      classpath:config/environment/environment-stg.yml
+
+---
+# PRD 설정
+spring.config.activate.on-profile: "profiles-prd"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-prd.yml,
+      classpath:config/environment/environment-prd.yml

@@ -1,0 +1,51 @@
+# Jasypt 설정
+# 암호화 비밀번호: JASYPT_ENCRYPTOR_PASSWORD 환경변수로 오버라이드
+# 암호화 값 생성: ./gradlew jasyptEncrypt --args="<비밀번호> <평문>"
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: local-default
+
+# Spring 설정
+spring:
+  jackson:
+    time-zone: UTC
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# JWT 설정
+jwt:
+  secret: local-jwt-secret-key-must-be-at-least-256-bits-long-for-hs256
+  access-token-validity-ms: 7200000    # 2시간
+  refresh-token-validity-ms: 604800000 # 7일
+
+# SpringDoc 설정
+springdoc:
+  api-docs:
+    path: /api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    groups-order: asc
+    tags-sorter: alpha
+    operations-sorter: alpha
+    filter: true
+    display-request-duration: true
+    doc-expansion: none
+  cache:
+    disabled: true
+  override-with-generic-response: false
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+# AWS 설정
+aws:
+  profile: default
+  s3:
+    region: ap-northeast-2
+    bucket-name: your-bucket-name
+    presigned-url-expiry-minutes: 5

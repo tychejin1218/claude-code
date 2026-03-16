@@ -17,6 +17,8 @@ model: sonnet
 - `.claude/docs/api-response.md`
 - `src/main/java/com/example/api/sample/` — 참조 구현체
 
+파일을 읽은 후 **ultrathink**로 버그·성능·보안·컨벤션 전 항목을 심층 분석하세요.
+
 ## 체크 항목
 
 ### 1. 버그 가능성

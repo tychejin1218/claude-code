@@ -23,7 +23,7 @@
 
 ```
 src/test/java/com/example/api/
-├── DbankApiApplicationTest.java            # Spring Context 로드 테스트
+├── ApiApplicationTest.java            # Spring Context 로드 테스트
 └── sample/
     ├── controller/
     │   └── SampleControllerTest.java       # Controller MockMvc 테스트
@@ -306,7 +306,7 @@ void getMember_notFound() {
 - `com/example/api/config/**` - 설정 클래스
 - `com/example/api/domain/entity/**` - JPA Entity
 - `com/example/api/**/dto/**` - DTO 클래스
-- `com/example/api/AppApplication.class` - 메인 클래스
+- `com/example/api/ApiApplication.class` - 메인 클래스
 
 ## 테스트 범위
 
