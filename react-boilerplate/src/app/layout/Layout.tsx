@@ -1,12 +1,21 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
+import { postLogout } from '@/features/auth/apis/authApi';
 
 const Layout = () => {
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
+  const refreshToken = useUserStore((state) => state.refreshToken);
   const navigate = useNavigate();
 
-  const onClickLogout = () => {
+  const onClickLogout = async () => {
+    if (refreshToken) {
+      try {
+        await postLogout(refreshToken);
+      } catch {
+        // 로그아웃 API 실패 시에도 클라이언트 상태는 초기화
+      }
+    }
     clearUser();
     navigate('/');
   };

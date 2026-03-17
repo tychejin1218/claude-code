@@ -10,5 +10,4 @@
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["e2e"]
 }

@@ -28,17 +28,55 @@ api.interceptors.request.use(
 /** 응답 인터셉터: 공통 에러 처리 */
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (axios.isAxiosError(error) && error.response) {
       const { status, data } = error.response;
       const errorResponse = data as ErrorResponse;
 
-      switch (status) {
-        case 401:
+      if (status === 401) {
+        const originalRequest = error.config;
+
+        // 토큰 갱신 요청 자체에서 401이 오면 무한 루프 방지 — 바로 로그아웃
+        if (originalRequest?.url?.includes('/auth/token/refresh')) {
+          useUserStore.getState().clearUser();
+          window.location.href = '/';
+          return Promise.reject(errorResponse);
+        }
+
+        const { refreshToken } = useUserStore.getState();
+
+        if (refreshToken) {
+          try {
+            const response = await axios.post(
+              `${env.VITE_API_BASE_URL}/auth/token/refresh`,
+              { refreshToken },
+              { headers: { 'Content-Type': 'application/json' } },
+            );
+
+            const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
+            useUserStore.getState().setAccessToken(newAccessToken);
+            useUserStore.getState().setRefreshToken(newRefreshToken);
+
+            // 원래 요청 재시도
+            if (originalRequest) {
+              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              return api(originalRequest);
+            }
+          } catch {
+            useUserStore.getState().clearUser();
+            window.location.href = '/';
+            return Promise.reject(errorResponse);
+          }
+        } else {
           console.error(`[401] ${ERROR_MESSAGES.UNAUTHORIZED}`, errorResponse);
           useUserStore.getState().clearUser();
           window.location.href = '/';
-          break;
+        }
+
+        return Promise.reject(errorResponse);
+      }
+
+      switch (status) {
         case 403:
           console.error(`[403] ${ERROR_MESSAGES.FORBIDDEN}`, errorResponse);
           break;
