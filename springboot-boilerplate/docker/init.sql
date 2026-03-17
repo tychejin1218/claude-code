@@ -6,6 +6,12 @@
 
 USE boilerplate_db;
 
+-- =============================================================================
+-- 기존 테이블 삭제 (FK 의존 순서 역순으로 삭제)
+-- =============================================================================
+DROP TABLE IF EXISTS todo;
+DROP TABLE IF EXISTS member;
+
 -- -----------------------------------------------------------------------------
 -- member : 회원 정보
 --   - email 은 로그인 ID 로 사용되므로 UNIQUE 제약
@@ -18,6 +24,7 @@ CREATE TABLE IF NOT EXISTS member (
   password   VARCHAR(200) NOT NULL                COMMENT 'BCrypt 인코딩된 비밀번호',
   created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP                   COMMENT '생성일시',
   updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
+  deleted_at DATETIME              DEFAULT NULL                                COMMENT '삭제일시 (NULL: 정상, NOT NULL: 논리 삭제)',
   PRIMARY KEY (id),
   UNIQUE KEY uq_member_email (email)            -- 이메일 중복 가입 방지
 ) COMMENT = '회원';
@@ -34,9 +41,32 @@ CREATE TABLE IF NOT EXISTS todo (
   member_id  BIGINT       NOT NULL                COMMENT '소유 회원 FK',
   created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP                   COMMENT '생성일시',
   updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
+  deleted_at DATETIME              DEFAULT NULL                                COMMENT '삭제일시 (NULL: 정상, NOT NULL: 논리 삭제)',
   PRIMARY KEY (id),
   KEY        ix_todo_member_id (member_id),       -- 회원별 목록 조회 인덱스
   CONSTRAINT fk_todo_member
     FOREIGN KEY (member_id) REFERENCES member (id)
     ON DELETE CASCADE                             -- 회원 삭제 시 할 일도 함께 삭제
 ) COMMENT = '할 일';
+
+-- =============================================================================
+-- 샘플 데이터 (개발 환경 전용)
+-- 비밀번호 원문: Test1234!
+-- =============================================================================
+
+INSERT INTO member (email, name, password) VALUES
+  ('user1@example.com', '홍길동', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu'),
+  ('user2@example.com', '김철수', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu'),
+  ('deleted@example.com', '탈퇴회원', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu');
+
+-- 논리 삭제된 회원 처리
+UPDATE member SET deleted_at = '2026-01-01 00:00:00' WHERE email = 'deleted@example.com';
+
+INSERT INTO todo (title, completed, member_id) VALUES
+  ('Spring Boot 프로젝트 세팅',   1, 1),
+  ('JWT 인증 구현',               1, 1),
+  ('Soft Delete 적용',            0, 1),
+  ('페이지네이션 구현',            0, 1),
+  ('React 프로젝트 세팅',         1, 2),
+  ('로그인 페이지 구현',           1, 2),
+  ('Todo 목록 UI 구현',           0, 2);
