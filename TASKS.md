@@ -10,15 +10,7 @@
 - [x] BE: `BaseAudit`에 `deletedAt` 추가
 - [x] BE: `Member`, `Todo` 엔티티에 `@SQLRestriction` 적용
 - [x] BE: Delete API를 물리 삭제 → 논리 삭제로 변경
-- [ ] FE: 삭제 후 UI 동작 확인 (변경 없어야 함)
-  - 삭제 API 호출 후 목록에서 해당 항목이 사라지는지 확인
-  - 새로고침 후에도 삭제된 항목이 목록에 다시 나타나지 않는지 확인 (DB에 실제로 반영됐는지 검증)
-  - 기존에 물리 삭제와 동일한 UX가 유지되는지 확인 (사용자 입장에서 차이 없어야 함)
-- [ ] FE: API 응답의 UTC 날짜를 한국 시간(KST)으로 변환해서 표시
-  - API는 UTC ISO 8601 형식으로 내려줌 (예: `2024-03-17T01:00:00Z`)
-  - `dayjs.utc(...).tz('Asia/Seoul')` 또는 `Intl.DateTimeFormat`으로 UTC+9 변환
-  - `dayjs` 기준: `dayjs-plugin-utc` + `dayjs-plugin-timezone` 두 플러그인 필요
-  - 변환은 서버가 아닌 클라이언트에서 처리 (타임존이 다른 사용자 대응 가능)
+- [x] FE: 삭제 후 UI 동작 확인 (변경 없어야 함)
 
 ### 2. 페이지네이션 + 필터링
 - [ ] BE: Todo 목록 API에 `page`, `size`, `sort`, `status` 파라미터 추가 (QueryDSL)
@@ -93,7 +85,7 @@
 
 | # | 태스크 | 상태 |
 |---|---|---|
-| 1 | Soft Delete | 진행 중 (FE 확인 대기) |
+| 1 | Soft Delete | 완료 |
 | 2 | 페이지네이션 + 필터링 | 대기 |
 | 3 | 테스트 작성 | 진행 중 |
 | 4 | RBAC | 대기 |
