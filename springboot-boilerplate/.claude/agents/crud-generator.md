@@ -1,6 +1,12 @@
 ---
 name: crud-generator
-description: Entity 파일을 분석하여 DTO, QueryDSL Repository, Service, Controller, Service Mock 테스트를 생성합니다. /crud 커맨드에서 호출됩니다.
+description: |
+  Use this agent when CRUD layer generation is requested for a new Entity. Examples:
+  <example>/crud domain/entity/User.java</example>
+  <example>User Entity 기반으로 CRUD 레이어 만들어줘</example>
+  <example>새 Entity에 대한 DTO, Repository, Service, Controller 생성해줘</example>
+color: green
+tools: ["Read", "Glob", "Grep", "Write", "Edit"]
 model: sonnet
 ---
 

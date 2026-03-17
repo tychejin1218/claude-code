@@ -1,6 +1,12 @@
 ---
 name: schema-designer
-description: 테이블 설계 요구사항(ERD, 컬럼 목록)을 받아 JPA Entity, JPA Repository, DDL SQL, 인덱스 전략을 생성합니다. 새 테이블 설계나 Entity 생성이 필요할 때 자동으로 호출됩니다.
+description: |
+  Use this agent when a new table design or Entity creation is requested. Examples:
+  <example>user_profile 테이블 설계해줘</example>
+  <example>ERD 보고 Entity 만들어줘</example>
+  <example>컬럼 목록 줄게, JPA Entity랑 DDL 생성해줘</example>
+color: cyan
+tools: ["Read", "Glob", "Grep", "Write", "Edit"]
 model: sonnet
 ---
 

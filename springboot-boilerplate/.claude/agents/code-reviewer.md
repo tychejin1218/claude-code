@@ -1,7 +1,12 @@
 ---
 name: code-reviewer
-description: 코드 리뷰를 수행합니다. 버그, 성능, 보안, 프로젝트 컨벤션 위반을 우선순위별로 분석합니다. /review 커맨드에서 호출됩니다.
-tools: Read, Glob, Grep
+description: |
+  Use this agent when code review is requested. Examples:
+  <example>/review UserService.java</example>
+  <example>이 코드 리뷰해줘</example>
+  <example>변경한 파일 버그 있는지 확인해줘</example>
+color: blue
+tools: ["Read", "Glob", "Grep"]
 model: sonnet
 ---
 
@@ -15,7 +20,7 @@ model: sonnet
 - 대상 파일 전체
 - `.claude/docs/naming-conventions.md`
 - `.claude/docs/api-response.md`
-- `src/main/java/com/example/api/sample/` — 참조 구현체
+- 같은 패키지의 기존 구현체 (예: `auth/`, `user/` 패키지)
 
 파일을 읽은 후 **ultrathink**로 버그·성능·보안·컨벤션 전 항목을 심층 분석하세요.
 

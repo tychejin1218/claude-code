@@ -1,6 +1,12 @@
 ---
 name: debugger
-description: Spring Boot 애플리케이션의 오류, 테스트 실패, 예상치 못한 동작의 근본 원인을 분석하고 최소한의 수정으로 해결합니다. 에러 메시지나 스택 트레이스가 공유되면 자동으로 호출됩니다.
+description: |
+  Use this agent when an error message or stack trace is shared. Examples:
+  <example>NullPointerException이 발생했어: [스택 트레이스]</example>
+  <example>테스트가 실패해: expected but was</example>
+  <example>LazyInitializationException 어떻게 고쳐?</example>
+color: red
+tools: ["Read", "Glob", "Grep", "Write", "Edit", "Bash"]
 model: sonnet
 ---
 

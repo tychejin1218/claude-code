@@ -1,7 +1,12 @@
 ---
 name: performance-inspector
-description: JPA N+1, 불필요한 Writer DataSource 사용, 페이징 누락, QueryDSL/MyBatis 쿼리 비효율을 감지하고 개선 방안을 제시합니다. /perf 커맨드에서 호출됩니다.
-tools: Read, Glob, Grep
+description: |
+  Use this agent when performance analysis is requested. Examples:
+  <example>/perf SampleService.java</example>
+  <example>N+1 문제 있는지 확인해줘</example>
+  <example>이 쿼리 성능 개선할 수 있어?</example>
+color: magenta
+tools: ["Read", "Glob", "Grep"]
 model: sonnet
 ---
 

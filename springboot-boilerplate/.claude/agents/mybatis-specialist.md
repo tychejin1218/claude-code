@@ -1,6 +1,12 @@
 ---
 name: mybatis-specialist
-description: 복잡한 MyBatis XML 동적 쿼리, Bulk 처리, resultMap 매핑을 작성합니다. @Alias 설정과 SQL 인젝션 방지까지 처리합니다. 복잡한 MyBatis 쿼리 작성이 필요할 때 자동으로 호출됩니다.
+description: |
+  Use this agent when complex MyBatis XML queries or Mapper interfaces need to be written. Examples:
+  <example>동적 조건이 많은 검색 쿼리 MyBatis로 작성해줘</example>
+  <example>Bulk INSERT XML 작성해줘</example>
+  <example>1:N 관계를 resultMap으로 매핑해줘</example>
+color: yellow
+tools: ["Read", "Glob", "Grep", "Write", "Edit"]
 model: sonnet
 ---
 
@@ -12,8 +18,8 @@ model: sonnet
 
 작업 전 반드시 아래를 읽으세요:
 - `.claude/docs/data-access.md` — MyBatis 사용 패턴
-- `src/main/java/com/example/api/sample/mapper/SampleMapper.java` — 참조 인터페이스
-- `src/main/resources/mapper/sample/SampleMapper.xml` — 참조 XML
+- 같은 패키지의 기존 Mapper 인터페이스 (있을 경우)
+- 같은 패키지의 기존 Mapper XML (있을 경우)
 - 대상 DTO 파일 (파라미터/반환 타입 파악)
 - 관련 Entity 파일 (테이블 구조 파악)
 

@@ -1,3 +1,8 @@
+---
+description: git diff 기반으로 커밋 메시지를 생성하고 커밋을 수행합니다.
+allowed-tools: ["Bash", "Read"]
+---
+
 # 커밋 메시지 자동 생성
 
 아래 순서로 커밋을 진행하세요.
