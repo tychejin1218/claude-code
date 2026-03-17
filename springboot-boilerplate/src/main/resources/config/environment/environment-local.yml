@@ -1,3 +1,7 @@
+# CORS 설정
+cors:
+  allowed-origins: "*"
+
 # Jasypt 설정
 # 암호화 비밀번호: JASYPT_ENCRYPTOR_PASSWORD 환경변수로 오버라이드
 # 암호화 값 생성: ./gradlew jasyptEncrypt --args="<비밀번호> <평문>"

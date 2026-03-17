@@ -3,6 +3,7 @@ package com.example.api.config.security;
 import com.example.api.config.jwt.JwtTokenProvider;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,6 +38,9 @@ public class SecurityConfig {
       "/auth/token/refresh",
       "/auth/token/temp"
   );
+
+  @Value("${cors.allowed-origins}")
+  private String corsAllowedOrigins;
 
   private final JwtTokenProvider jwtTokenProvider;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -91,7 +95,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOriginPatterns(List.of("*"));
+    config.setAllowedOriginPatterns(List.of(corsAllowedOrigins));
     config.setAllowedMethods(List.of("*"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);

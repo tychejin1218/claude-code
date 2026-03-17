@@ -121,7 +121,7 @@
     <property name="LOG_LEVEL_org.springframework" value="INFO"/>
     <property name="LOG_LEVEL_com.zaxxer.hikari" value="INFO"/>
     <property name="LOG_LEVEL_org.hibernate" value="INFO"/>
-    <property name="LO _LEVEL_org.hibernate.SQL" value="INFO"/>
+    <property name="LOG_LEVEL_org.hibernate.SQL" value="INFO"/>
     <property name="LOG_LEVEL_org.hibernate.orm.jdbc.bind" value="INFO"/>
   </springProfile>
 

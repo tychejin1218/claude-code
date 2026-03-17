@@ -1,3 +1,7 @@
+# CORS 설정
+cors:
+  allowed-origins: "*"
+
 # JWT 설정
 jwt:
   secret: change-me-stg-jwt-secret-key-must-be-at-least-256-bits-long
