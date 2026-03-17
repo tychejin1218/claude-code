@@ -19,6 +19,13 @@ spring:
       add-mappings: false
   messages:
     basename: message/messages
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  jackson:
+    time-zone: UTC
   main:
     allow-bean-definition-overriding: true
   profiles:
