@@ -12,10 +12,12 @@ USE boilerplate_db;
 --   - password 는 BCrypt 인코딩된 값 저장 (평문 저장 금지)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS member (
-  id       BIGINT       NOT NULL AUTO_INCREMENT COMMENT '회원 PK',
-  email    VARCHAR(200) NOT NULL                COMMENT '이메일 (로그인 ID)',
-  name     VARCHAR(100) NOT NULL                COMMENT '이름',
-  password VARCHAR(200) NOT NULL                COMMENT 'BCrypt 인코딩된 비밀번호',
+  id         BIGINT       NOT NULL AUTO_INCREMENT COMMENT '회원 PK',
+  email      VARCHAR(200) NOT NULL                COMMENT '이메일 (로그인 ID)',
+  name       VARCHAR(100) NOT NULL                COMMENT '이름',
+  password   VARCHAR(200) NOT NULL                COMMENT 'BCrypt 인코딩된 비밀번호',
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP                   COMMENT '생성일시',
+  updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
   PRIMARY KEY (id),
   UNIQUE KEY uq_member_email (email)            -- 이메일 중복 가입 방지
 ) COMMENT = '회원';
@@ -26,10 +28,12 @@ CREATE TABLE IF NOT EXISTS member (
 --   - completed : 0 = 미완료, 1 = 완료
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS todo (
-  id        BIGINT       NOT NULL AUTO_INCREMENT COMMENT '할 일 PK',
-  title     VARCHAR(200) NOT NULL                COMMENT '할 일 내용',
-  completed TINYINT(1)   NOT NULL DEFAULT 0      COMMENT '완료 여부 (0: 미완료, 1: 완료)',
-  member_id BIGINT       NOT NULL                COMMENT '소유 회원 FK',
+  id         BIGINT       NOT NULL AUTO_INCREMENT COMMENT '할 일 PK',
+  title      VARCHAR(200) NOT NULL                COMMENT '할 일 내용',
+  completed  TINYINT(1)   NOT NULL DEFAULT 0      COMMENT '완료 여부 (0: 미완료, 1: 완료)',
+  member_id  BIGINT       NOT NULL                COMMENT '소유 회원 FK',
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP                   COMMENT '생성일시',
+  updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
   PRIMARY KEY (id),
   KEY        ix_todo_member_id (member_id),       -- 회원별 목록 조회 인덱스
   CONSTRAINT fk_todo_member

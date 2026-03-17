@@ -26,7 +26,7 @@ import lombok.ToString;
 @ToString
 @Table(name = "todo")
 @Entity
-public class Todo {
+public class Todo extends BaseAudit {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
