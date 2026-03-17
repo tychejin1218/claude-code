@@ -82,5 +82,4 @@ public class SampleService {
       SampleDto.MemberRequest request) {
     return sampleMapper.selectMembers(request);
   }
-
 }

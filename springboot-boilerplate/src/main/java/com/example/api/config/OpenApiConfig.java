@@ -73,6 +73,19 @@ public class OpenApiConfig {
   }
 
   /**
+   * 회원 모듈 API 그룹
+   *
+   * @return GroupedOpenApi 인스턴스
+   */
+  @Bean
+  public GroupedOpenApi userApi() {
+    return GroupedOpenApi.builder()
+        .group("회원 API")
+        .pathsToMatch("/users/**")
+        .build();
+  }
+
+  /**
    * 할 일 모듈 API 그룹
    *
    * @return GroupedOpenApi 인스턴스
