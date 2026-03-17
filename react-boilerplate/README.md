@@ -217,3 +217,54 @@ npm run build:dev   # Development 빌드
 npm run build:stg   # Staging 빌드
 npm run build:prd   # Production 빌드 (console, debugger 자동 제거)
 ```
+
+---
+
+## 새 Feature 추가 가이드
+
+`features/todo`와 동일한 구조로 새 기능을 추가합니다.
+
+### Claude Code 커맨드 사용 (권장)
+
+```
+/scaffold <feature명>
+
+예) /scaffold board
+```
+
+자동으로 아래 파일 구조를 생성하고 `queryKeys.ts`, `handlers.ts`, `router.tsx`를 업데이트합니다.
+
+### 수동 추가
+
+```
+src/features/{feature}/
+├── types/{feature}.ts        # 타입 정의
+├── apis/{feature}Api.ts      # API 함수
+├── hooks/use{Feature}s.ts    # React Query 훅
+├── mocks/{feature}Handlers.ts # MSW 핸들러
+├── pages/{Feature}Page.tsx   # 페이지 컴포넌트
+└── components/               # UI 컴포넌트
+```
+
+수동 추가 후 아래 파일도 함께 수정해야 합니다:
+
+| 파일 | 수정 내용 |
+|------|---------|
+| `src/shared/apis/queryKeys.ts` | `createQueryKeys` 추가 |
+| `src/mocks/handlers.ts` | 핸들러 import 및 추가 |
+| `src/app/router/router.tsx` | lazy import 및 라우트 추가 |
+
+---
+
+## Axios 인터셉터 동작
+
+`src/shared/apis/instance.ts`에 전역 인터셉터가 설정되어 있습니다.
+
+| 시점 | 동작 |
+|------|------|
+| 요청 전 | Zustand `accessToken`을 `Authorization: Bearer {token}` 헤더에 자동 주입 |
+| 401 응답 | `clearUser()` 호출 → `window.location.href = '/'` 리다이렉트 |
+| 403 응답 | 콘솔 에러 출력 |
+| 500 응답 | 콘솔 에러 출력 |
+
+모든 API 함수는 `api` 인스턴스를 사용하므로 별도 토큰 처리 없이 자동 적용됩니다.

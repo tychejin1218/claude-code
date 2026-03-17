@@ -247,3 +247,58 @@ src/main/resources/
 # 빌드 산출물
 # build/libs/app.jar
 ```
+
+---
+
+## Jasypt 암호화
+
+`environment-{profile}.yml`에 민감한 값을 `ENC(암호문)` 형태로 저장합니다.
+
+### 새 ENC() 값 생성
+
+```bash
+./gradlew jasyptEncrypt --args="<비밀번호> <평문>"
+
+# 예시
+./gradlew jasyptEncrypt --args="local-default mySecretValue"
+# 출력: ENC(XXXXXXXXXXXXXXXX...)
+```
+
+### yml에 적용
+
+```yaml
+jwt:
+  secret: ENC(XXXXXXXXXXXXXXXX...)
+```
+
+> 로컬 기본 비밀번호: `local-default`
+> 운영 환경에서는 `JASYPT_ENCRYPTOR_PASSWORD` 환경변수로 주입합니다.
+
+---
+
+## QueryDSL Q클래스 생성
+
+JPA Entity 추가·변경 시 Q클래스를 재생성해야 합니다.
+
+```bash
+./gradlew compileJava
+# 생성 위치: src/main/generated/
+```
+
+> `src/main/generated/`는 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
+
+---
+
+## Docker 볼륨 초기화
+
+테이블 구조 변경 등으로 DB를 초기화해야 할 때:
+
+```bash
+# 컨테이너 + 볼륨 삭제
+docker-compose down -v
+
+# 재시작 (init.sql 자동 실행 → 테이블 재생성)
+docker-compose up -d
+```
+
+> `docker/init.sql`이 MySQL 최초 기동 시 자동으로 실행됩니다.
