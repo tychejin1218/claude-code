@@ -78,6 +78,6 @@ public class TodoService {
   public void deleteTodo(String email, Long id) {
     Todo todo = todoRepository.findByIdAndMemberEmail(id, email)
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
-    todoRepository.delete(todo);
+    todo.softDelete();
   }
 }

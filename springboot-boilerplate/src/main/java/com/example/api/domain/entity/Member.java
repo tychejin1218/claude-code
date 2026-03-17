@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  * 회원 엔티티
@@ -25,6 +26,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@SQLRestriction("deleted_at IS NULL")
 @Table(name = "member")
 @Entity
 public class Member extends BaseAudit {
