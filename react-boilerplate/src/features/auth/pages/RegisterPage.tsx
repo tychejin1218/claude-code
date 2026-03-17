@@ -3,16 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postRegister } from '@/features/auth/apis/authApi';
 import type { ErrorResponse } from '@/shared/types/api';
-
-/** JWT payload에서 sub(email) 추출 */
-const parseEmailFromToken = (token: string): string => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    return (payload as { sub?: string }).sub ?? '';
-  } catch {
-    return '';
-  }
-};
+import { parseEmailFromToken } from '@/shared/utils/token';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -66,7 +57,7 @@ const RegisterPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
               required
-              className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -78,7 +69,7 @@ const RegisterPage = () => {
               onChange={(e) => setName(e.target.value)}
               placeholder="홍길동"
               required
-              className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -90,7 +81,7 @@ const RegisterPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="8자 이상 입력"
               required
-              className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
             />
           </div>
 

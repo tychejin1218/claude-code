@@ -3,16 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postLogin } from '@/features/auth/apis/authApi';
 import type { ErrorResponse } from '@/shared/types/api';
-
-/** JWT payload에서 sub(email) 추출 */
-const parseEmailFromToken = (token: string): string => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    return (payload as { sub?: string }).sub ?? '';
-  } catch {
-    return '';
-  }
-};
+import { parseEmailFromToken } from '@/shared/utils/token';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -31,7 +22,7 @@ const LoginPage = () => {
 
     try {
       const res = await postLogin({ email, password });
-      const { accessToken, refreshToken: _refreshToken } = res.data;
+      const { accessToken } = res.data;
       const parsedEmail = parseEmailFromToken(accessToken) || email;
 
       setUser({ userId: parsedEmail, name: parsedEmail, email: parsedEmail });
@@ -59,7 +50,7 @@ const LoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
               required
-              className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -71,7 +62,7 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호 입력"
               required
-              className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              className="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none"
             />
           </div>
 
