@@ -2,6 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Layout from '@/app/layout/Layout';
+import AdminRoute from '@/features/auth/components/AdminRoute';
 import AuthRoute from '@/features/auth/components/AuthRoute';
 import RouterErrorFallback from '@/shared/components/common/RouterErrorFallback';
 import SuspenseBoundary from '@/shared/components/common/SuspenseBoundary';
@@ -11,6 +12,7 @@ const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'));
 const AuthErrorPage = lazy(() => import('@/features/auth/pages/AuthErrorPage'));
 const TodoPage = lazy(() => import('@/features/todo/pages/TodoPage'));
+const AdminPage = lazy(() => import('@/features/admin/pages/AdminPage'));
 const HomePage = lazy(() => import('@/app/pages/HomePage'));
 const NotFoundPage = lazy(() => import('@/app/pages/NotFoundPage'));
 
@@ -52,6 +54,22 @@ const router = createBrowserRouter([
           {
             path: '/todos',
             element: withSuspense(TodoPage),
+          },
+        ],
+      },
+    ],
+  },
+  // 관리자 전용
+  {
+    element: <AdminRoute />,
+    errorElement: <RouterErrorFallback />,
+    children: [
+      {
+        element: <Layout />,
+        children: [
+          {
+            path: '/admin',
+            element: withSuspense(AdminPage),
           },
         ],
       },

@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postRegister } from '@/features/auth/apis/authApi';
 import type { ErrorResponse } from '@/shared/types/api';
-import { parseEmailFromToken } from '@/shared/utils/token';
+import { parseEmailFromToken, parseRoleFromToken } from '@/shared/utils/token';
+import type { MemberRole } from '@/features/auth/types/user';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -31,8 +32,9 @@ const RegisterPage = () => {
       const res = await postRegister({ email, name, password });
       const { accessToken } = res.data;
       const parsedEmail = parseEmailFromToken(accessToken) || email;
+      const role = parseRoleFromToken(accessToken) as MemberRole;
 
-      setUser({ userId: parsedEmail, name, email: parsedEmail });
+      setUser({ userId: parsedEmail, name, email: parsedEmail, role });
       setAccessToken(accessToken);
       void navigate('/todos');
     } catch (err) {

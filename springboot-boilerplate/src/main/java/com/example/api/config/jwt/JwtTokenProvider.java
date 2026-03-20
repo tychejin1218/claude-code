@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
+  private static final String CLAIM_ROLE = "role";
+
   private final SecretKey secretKey;
   private final long accessTokenValidityMs;
   private final long refreshTokenValidityMs;
@@ -45,31 +47,42 @@ public class JwtTokenProvider {
   /**
    * 액세스 토큰 생성
    *
-   * @param subject 토큰 주체 (사용자 ID)
+   * @param subject 토큰 주체 (사용자 이메일)
+   * @param role    회원 역할
    * @return 액세스 토큰
    */
-  public String createAccessToken(String subject) {
-    return createToken(subject, accessTokenValidityMs);
+  public String createAccessToken(String subject, String role) {
+    return createToken(subject, role, accessTokenValidityMs);
   }
 
   /**
    * 리프레시 토큰 생성
    *
-   * @param subject 토큰 주체 (사용자 ID)
+   * @param subject 토큰 주체 (사용자 이메일)
    * @return 리프레시 토큰
    */
   public String createRefreshToken(String subject) {
-    return createToken(subject, refreshTokenValidityMs);
+    return createToken(subject, null, refreshTokenValidityMs);
   }
 
   /**
-   * 토큰에서 Subject(사용자 ID) 추출
+   * 토큰에서 Subject(사용자 이메일) 추출
    *
    * @param token JWT 토큰
    * @return Subject
    */
   public String getSubject(String token) {
     return parseClaims(token).getSubject();
+  }
+
+  /**
+   * 토큰에서 역할 추출
+   *
+   * @param token JWT 토큰
+   * @return 역할 문자열 (없으면 null)
+   */
+  public String getRole(String token) {
+    return parseClaims(token).get(CLAIM_ROLE, String.class);
   }
 
   /**
@@ -96,14 +109,17 @@ public class JwtTokenProvider {
     return false;
   }
 
-  private String createToken(String subject, long validityMs) {
+  private String createToken(String subject, String role, long validityMs) {
     Instant now = Instant.now();
-    return Jwts.builder()
+    var builder = Jwts.builder()
         .subject(subject)
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plusMillis(validityMs)))
-        .signWith(secretKey)
-        .compact();
+        .signWith(secretKey);
+    if (role != null) {
+      builder.claim(CLAIM_ROLE, role);
+    }
+    return builder.compact();
   }
 
   private Claims parseClaims(String token) {

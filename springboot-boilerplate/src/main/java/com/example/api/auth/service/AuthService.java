@@ -42,8 +42,9 @@ public class AuthService {
       throw new ApiException(HttpStatus.CONFLICT, ApiStatus.DUPLICATED_REQUEST);
     }
     String encodedPassword = passwordEncoder.encode(request.getPassword());
-    memberRepository.save(Member.of(request.getEmail(), request.getName(), encodedPassword));
-    return issueTokenPair(request.getEmail());
+    Member member = memberRepository.save(
+        Member.of(request.getEmail(), request.getName(), encodedPassword));
+    return issueTokenPair(member);
   }
 
   /**
@@ -61,7 +62,7 @@ public class AuthService {
       throw new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED);
     }
 
-    return issueTokenPair(member.getEmail());
+    return issueTokenPair(member);
   }
 
   /**
@@ -100,15 +101,19 @@ public class AuthService {
       throw new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED);
     }
 
-    return issueTokenPair(subject);
+    Member member = memberRepository.findByEmail(subject)
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED));
+
+    return issueTokenPair(member);
   }
 
-  private AuthDto.TokenResponse issueTokenPair(String subject) {
-    String accessToken = jwtTokenProvider.createAccessToken(subject);
-    String refreshToken = jwtTokenProvider.createRefreshToken(subject);
+  private AuthDto.TokenResponse issueTokenPair(Member member) {
+    String accessToken = jwtTokenProvider.createAccessToken(
+        member.getEmail(), member.getRole().name());
+    String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
 
     redisComponent.setStringValue(
-        RedisKeys.REFRESH_TOKEN.getKey() + subject,
+        RedisKeys.REFRESH_TOKEN.getKey() + member.getEmail(),
         refreshToken,
         RedisKeys.REFRESH_TOKEN.getTtl(),
         TimeUnit.SECONDS);

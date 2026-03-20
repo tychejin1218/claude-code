@@ -67,7 +67,7 @@ class AuthServiceMockTest {
         .build();
     given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
     given(passwordEncoder.matches("password123", "encodedPassword")).willReturn(true);
-    given(jwtTokenProvider.createAccessToken("test@example.com")).willReturn("accessToken");
+    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn("accessToken");
     given(jwtTokenProvider.createRefreshToken("test@example.com")).willReturn("refreshToken");
 
     // when
@@ -158,11 +158,18 @@ class AuthServiceMockTest {
     AuthDto.RefreshRequest request = AuthDto.RefreshRequest.builder()
         .refreshToken("validToken")
         .build();
+    Member member = Member.builder()
+        .id(1L)
+        .email("test@example.com")
+        .name("테스트")
+        .password("encodedPassword")
+        .build();
     given(jwtTokenProvider.validateToken("validToken")).willReturn(true);
     given(jwtTokenProvider.getSubject("validToken")).willReturn("test@example.com");
     given(redisComponent.getStringValue("APP:REFRESH_TOKEN:test@example.com"))
         .willReturn("validToken");
-    given(jwtTokenProvider.createAccessToken("test@example.com")).willReturn("newAccessToken");
+    given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
+    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn("newAccessToken");
     given(jwtTokenProvider.createRefreshToken("test@example.com")).willReturn("newRefreshToken");
 
     // when
@@ -221,9 +228,16 @@ class AuthServiceMockTest {
         .name("신규회원")
         .password("password123")
         .build();
+    Member savedMember = Member.builder()
+        .id(1L)
+        .email("new@example.com")
+        .name("신규회원")
+        .password("encodedPassword")
+        .build();
     given(memberRepository.existsByEmail("new@example.com")).willReturn(false);
     given(passwordEncoder.encode("password123")).willReturn("encodedPassword");
-    given(jwtTokenProvider.createAccessToken("new@example.com")).willReturn("accessToken");
+    given(memberRepository.save(any(Member.class))).willReturn(savedMember);
+    given(jwtTokenProvider.createAccessToken("new@example.com", "ROLE_USER")).willReturn("accessToken");
     given(jwtTokenProvider.createRefreshToken("new@example.com")).willReturn("refreshToken");
 
     // when

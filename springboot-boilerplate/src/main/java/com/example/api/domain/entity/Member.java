@@ -2,6 +2,8 @@ package com.example.api.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,6 +46,11 @@ public class Member extends BaseAudit {
 
   @Column(name = "password", nullable = false, length = 200)
   private String password;
+
+  @Builder.Default
+  @Enumerated(EnumType.STRING)
+  @Column(name = "role", nullable = false, length = 20)
+  private MemberRole role = MemberRole.ROLE_USER;
 
   @Builder.Default
   @ToString.Exclude
