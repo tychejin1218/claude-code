@@ -2,8 +2,7 @@ import { lazy, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Layout from '@/app/layout/Layout';
-import AdminRoute from '@/features/auth/components/AdminRoute';
-import AuthRoute from '@/features/auth/components/AuthRoute';
+import RouteGuard from '@/features/auth/components/RouteGuard';
 import RouterErrorFallback from '@/shared/components/common/RouterErrorFallback';
 import SuspenseBoundary from '@/shared/components/common/SuspenseBoundary';
 
@@ -41,7 +40,7 @@ const router = createBrowserRouter([
   },
   // 인증 필요
   {
-    element: <AuthRoute />,
+    element: <RouteGuard />,
     errorElement: <RouterErrorFallback />,
     children: [
       {
@@ -61,7 +60,7 @@ const router = createBrowserRouter([
   },
   // 관리자 전용
   {
-    element: <AdminRoute />,
+    element: <RouteGuard requiredRole="ROLE_ADMIN" />,
     errorElement: <RouterErrorFallback />,
     children: [
       {

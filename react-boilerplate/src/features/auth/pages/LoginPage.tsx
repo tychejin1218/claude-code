@@ -1,23 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postLogin } from '@/features/auth/apis/authApi';
-import type { ErrorResponse } from '@/shared/types/api';
-import { parseEmailFromToken, parseRoleFromToken } from '@/shared/utils/token';
 import type { MemberRole } from '@/features/auth/types/user';
+import type { ErrorResponse } from '@/shared/types/api';
+import { API_STATUS_CODES } from '@/shared/constants/apiStatus';
+import useRetryCountdown from '@/shared/hooks/useRetryCountdown';
+import { parseEmailFromToken, parseRoleFromToken } from '@/shared/utils/token';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [retrySeconds, setRetrySeconds] = useState(0);
-
-  useEffect(() => {
-    if (retrySeconds <= 0) return;
-    const timer = setTimeout(() => setRetrySeconds((s) => s - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [retrySeconds]);
+  const { retrySeconds, startCountdown } = useRetryCountdown();
 
   const setUser = useUserStore((state) => state.setUser);
   const setAccessToken = useUserStore((state) => state.setAccessToken);
@@ -39,8 +35,8 @@ const LoginPage = () => {
       void navigate('/todos');
     } catch (err) {
       const apiErr = err as ErrorResponse;
-      if (apiErr?.statusCode === '808') {
-        setRetrySeconds(60);
+      if (apiErr?.statusCode === API_STATUS_CODES.RATE_LIMIT_EXCEEDED) {
+        startCountdown(60);
       }
       setError(apiErr?.message ?? '로그인에 실패했습니다.');
     } finally {

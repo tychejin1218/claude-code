@@ -14,6 +14,9 @@ import lombok.Getter;
 @Builder
 public class ErrorResponse {
 
+  private static final DateTimeFormatter TIMESTAMP_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
   private String statusCode;
   private String message;
   private String method;
@@ -34,8 +37,7 @@ public class ErrorResponse {
         .message(apiStatus.getMessage())
         .method(method)
         .path(path)
-        .timestamp(LocalDateTime.now(ZoneOffset.UTC)
-            .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+        .timestamp(LocalDateTime.now(ZoneOffset.UTC).format(TIMESTAMP_FORMATTER))
         .build();
   }
 
@@ -54,8 +56,7 @@ public class ErrorResponse {
         .message(message)
         .method(method)
         .path(path)
-        .timestamp(LocalDateTime.now(ZoneOffset.UTC)
-            .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+        .timestamp(LocalDateTime.now(ZoneOffset.UTC).format(TIMESTAMP_FORMATTER))
         .build();
   }
 }

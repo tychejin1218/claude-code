@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo } from '@/features/todo/hooks/useTodos';
 import TodoItem from '@/features/todo/components/TodoItem';
 import type { TodoFilter, TodoListParams, TodoSort } from '@/features/todo/types/todo';
@@ -38,15 +38,15 @@ const TodoPage = () => {
     setInput('');
   };
 
-  const handleFilterChange = (newFilter: TodoFilter) => {
+  const handleFilterChange = useCallback((newFilter: TodoFilter) => {
     setFilter(newFilter);
     setPage(0);
-  };
+  }, []);
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(e.target.value as TodoSort);
     setPage(0);
-  };
+  }, []);
 
   return (
     <div className="mx-auto max-w-lg py-6">
