@@ -80,6 +80,9 @@ api.interceptors.response.use(
         case 403:
           console.error(`[403] ${ERROR_MESSAGES.FORBIDDEN}`, errorResponse);
           break;
+        case 429:
+          console.error(`[429] ${ERROR_MESSAGES.RATE_LIMIT}`, errorResponse);
+          break;
         case 500:
           console.error(`[500] ${ERROR_MESSAGES.SERVER_ERROR}`, errorResponse);
           break;

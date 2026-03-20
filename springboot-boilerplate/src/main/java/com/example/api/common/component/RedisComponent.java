@@ -183,6 +183,27 @@ public class RedisComponent {
   }
 
   /**
+   * Redis 정수 카운터 증가 (키가 없으면 생성 후 TTL 설정)
+   *
+   * @param key      Redis 키
+   * @param duration TTL
+   * @param unit     TTL 단위
+   * @return 증가 후 카운트 값 (오류 시 null)
+   */
+  public Long increment(String key, long duration, TimeUnit unit) {
+    try {
+      Long count = stringRedisTemplate.opsForValue().increment(key);
+      if (Long.valueOf(1L).equals(count)) {
+        stringRedisTemplate.expire(key, duration, unit);
+      }
+      return count;
+    } catch (Exception e) {
+      log.error("[increment] 실패 - key: {}, message: {}", key, e.getMessage(), e);
+      return null;
+    }
+  }
+
+  /**
    * Redis 키 존재 여부 확인
    *
    * @param key 확인할 Redis 키

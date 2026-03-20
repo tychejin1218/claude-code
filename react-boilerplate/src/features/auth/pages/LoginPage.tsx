@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postLogin } from '@/features/auth/apis/authApi';
@@ -11,6 +11,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [retrySeconds, setRetrySeconds] = useState(0);
+
+  useEffect(() => {
+    if (retrySeconds <= 0) return;
+    const timer = setTimeout(() => setRetrySeconds((s) => s - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [retrySeconds]);
 
   const setUser = useUserStore((state) => state.setUser);
   const setAccessToken = useUserStore((state) => state.setAccessToken);
@@ -32,6 +39,9 @@ const LoginPage = () => {
       void navigate('/todos');
     } catch (err) {
       const apiErr = err as ErrorResponse;
+      if (apiErr?.statusCode === '808') {
+        setRetrySeconds(60);
+      }
       setError(apiErr?.message ?? '로그인에 실패했습니다.');
     } finally {
       setLoading(false);
@@ -72,10 +82,10 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || retrySeconds > 0}
             className="rounded bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? '로그인 중...' : '로그인'}
+            {retrySeconds > 0 ? `${retrySeconds}초 후 재시도` : loading ? '로그인 중...' : '로그인'}
           </button>
         </form>
 

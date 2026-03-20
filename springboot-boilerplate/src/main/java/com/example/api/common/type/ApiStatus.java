@@ -19,6 +19,7 @@ public enum ApiStatus {
   UNAUTHORIZED("805", "유효하지 않은 권한입니다."),
   MEMBER_UPDATE_FAILED("806", "회원 정보 수정에 실패했습니다."),
   MEMBER_DELETE_FAILED("807", "회원 정보 삭제에 실패했습니다."),
+  RATE_LIMIT_EXCEEDED("808", "요청 횟수가 초과됐습니다. 잠시 후 다시 시도해주세요."),
   INTERNAL_SERVER_ERROR("900", "내부 오류가 발생했습니다."),
   METHOD_ARGUMENT_NOT_VALID("901", "파라미터가 유효하지 않습니다."),
   MISSING_SERVLET_REQUEST_PARAMETER("902", "필수 파라미터가 누락되었습니다."),

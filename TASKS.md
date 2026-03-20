@@ -40,9 +40,9 @@
 > Google Cloud Console 연동 필요 — 생략
 
 ### 6. Rate Limiting
-- [ ] BE: Redis 기반 요청 카운터 구현 (또는 Bucket4j)
-- [ ] BE: 인증 API (`/api/auth/**`)에 분당 N회 제한 적용
-- [ ] FE: 429 응답 처리 + 재시도 대기 UI
+- [x] BE: Redis 기반 요청 카운터 구현 (또는 Bucket4j)
+- [x] BE: 인증 API (`/api/auth/**`)에 분당 N회 제한 적용
+- [x] FE: 429 응답 처리 + 재시도 대기 UI
 
 ---
 
@@ -86,7 +86,7 @@
 | 3 | 테스트 작성 | 완료 |
 | 4 | RBAC | 완료 |
 | 5 | 소셜 로그인 | 생략 |
-| 6 | Rate Limiting | 대기 |
+| 6 | Rate Limiting | 완료 |
 | 7 | 파일 업로드 | 대기 |
 | 8 | 실시간 알림 (SSE) | 대기 |
 | 9 | 모니터링 | 대기 |
