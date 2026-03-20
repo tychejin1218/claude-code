@@ -1,9 +1,11 @@
 import api from '@/shared/apis/instance';
 import type { ApiResponse } from '@/shared/types/api';
-import type { Todo, CreateTodoRequest } from '@/features/todo/types/todo';
+import type { Todo, CreateTodoRequest, TodoListParams, PageResponse } from '@/features/todo/types/todo';
 
-export const getTodos = (): Promise<ApiResponse<Todo[]>> =>
-  api.get<ApiResponse<Todo[]>>('/todos').then((res) => res.data);
+export const getTodos = (params: TodoListParams): Promise<ApiResponse<PageResponse<Todo>>> =>
+  api
+    .get<ApiResponse<PageResponse<Todo>>>('/todos', { params })
+    .then((res) => res.data);
 
 export const postTodo = (data: CreateTodoRequest): Promise<ApiResponse<Todo>> =>
   api.post<ApiResponse<Todo>>('/todos', data).then((res) => res.data);

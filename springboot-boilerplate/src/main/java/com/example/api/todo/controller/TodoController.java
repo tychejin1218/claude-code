@@ -1,14 +1,15 @@
 package com.example.api.todo.controller;
 
 import com.example.api.common.response.BaseResponse;
+import com.example.api.common.response.PageResponse;
 import com.example.api.todo.dto.TodoDto;
 import com.example.api.todo.service.TodoService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +29,10 @@ public class TodoController implements TodoControllerDocs {
 
   @Override
   @GetMapping
-  public BaseResponse<List<TodoDto.TodoResponse>> getTodoList(Authentication authentication) {
-    return BaseResponse.ok(todoService.getTodoList(authentication.getName()));
+  public BaseResponse<PageResponse<TodoDto.TodoResponse>> getTodoList(
+      Authentication authentication,
+      @ModelAttribute TodoDto.TodoListRequest request) {
+    return BaseResponse.ok(todoService.getTodoList(authentication.getName(), request));
   }
 
   @Override

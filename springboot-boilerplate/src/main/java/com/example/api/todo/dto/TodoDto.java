@@ -8,11 +8,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 할 일 DTO
  */
 public class TodoDto {
+
+  /**
+   * 할 일 목록 조회 요청
+   */
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @Schema(description = "할 일 목록 조회 요청")
+  public static class TodoListRequest {
+
+    @Schema(description = "페이지 번호 (0부터 시작)", example = "0")
+    private int page;
+
+    @Schema(description = "페이지 크기", example = "10")
+    private int size = 10;
+
+    @Schema(description = "완료 상태 필터 (all/completed/incomplete)", example = "all")
+    private String status = "all";
+
+    @Schema(description = "정렬 기준 (id/title)", example = "id")
+    private String sort = "id";
+  }
 
   /**
    * 할 일 생성 요청

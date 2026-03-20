@@ -2,6 +2,7 @@ package com.example.api.todo.controller;
 
 import com.example.api.common.response.BaseResponse;
 import com.example.api.common.response.ErrorResponse;
+import com.example.api.common.response.PageResponse;
 import com.example.api.todo.dto.TodoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 
@@ -21,12 +21,16 @@ import org.springframework.security.core.Authentication;
 public interface TodoControllerDocs {
 
   /**
-   * 내 할 일 목록 조회
+   * 내 할 일 목록 조회 (페이지네이션 + 상태 필터)
    *
    * @param authentication 인증 정보
-   * @return 할 일 목록
+   * @param request        조회 조건 (page, size, status)
+   * @return 페이지 응답
    */
-  @Operation(summary = "할 일 목록 조회", description = "인증된 회원의 할 일 목록을 최신순으로 조회합니다.")
+  @Operation(
+      summary = "할 일 목록 조회",
+      description = "인증된 회원의 할 일 목록을 최신순으로 페이지네이션하여 조회합니다."
+  )
   @ApiResponse(
       responseCode = "200",
       description = "조회 성공",
@@ -37,15 +41,23 @@ public interface TodoControllerDocs {
               {
                 "statusCode": "200",
                 "message": "성공",
-                "data": [
-                  {"id": 2, "title": "리액트 공부하기", "completed": false},
-                  {"id": 1, "title": "스프링 부트 공부하기", "completed": true}
-                ]
+                "data": {
+                  "content": [
+                    {"id": 2, "title": "리액트 공부하기", "completed": false},
+                    {"id": 1, "title": "스프링 부트 공부하기", "completed": true}
+                  ],
+                  "page": 0,
+                  "size": 10,
+                  "totalElements": 2,
+                  "totalPages": 1,
+                  "last": true
+                }
               }
               """)
       )
   )
-  BaseResponse<List<TodoDto.TodoResponse>> getTodoList(Authentication authentication);
+  BaseResponse<PageResponse<TodoDto.TodoResponse>> getTodoList(
+      Authentication authentication, TodoDto.TodoListRequest request);
 
   /**
    * 할 일 추가

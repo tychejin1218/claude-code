@@ -1,12 +1,14 @@
 package com.example.api.todo.service;
 
 import com.example.api.common.exception.ApiException;
+import com.example.api.common.response.PageResponse;
 import com.example.api.common.type.ApiStatus;
 import com.example.api.domain.entity.Member;
 import com.example.api.domain.entity.Todo;
 import com.example.api.domain.repository.MemberRepository;
 import com.example.api.domain.repository.TodoRepository;
 import com.example.api.todo.dto.TodoDto;
+import com.example.api.todo.repository.TodoQueryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,19 +25,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoService {
 
   private final TodoRepository todoRepository;
+  private final TodoQueryRepository todoQueryRepository;
   private final MemberRepository memberRepository;
 
   /**
-   * 내 할 일 목록 조회
+   * 내 할 일 목록 조회 (페이지네이션 + 상태 필터)
    *
-   * @param email 인증 회원 이메일
-   * @return 할 일 목록
+   * @param email   인증 회원 이메일
+   * @param request 조회 조건 (page, size, status)
+   * @return 페이지 응답
    */
   @Transactional(readOnly = true)
-  public List<TodoDto.TodoResponse> getTodoList(String email) {
-    return todoRepository.findByMemberEmailOrderByIdDesc(email).stream()
+  public PageResponse<TodoDto.TodoResponse> getTodoList(
+      String email, TodoDto.TodoListRequest request) {
+    List<Todo> todos = todoQueryRepository.selectTodoList(email, request);
+    long total = todoQueryRepository.selectTodoCount(email, request);
+    List<TodoDto.TodoResponse> content = todos.stream()
         .map(TodoDto.TodoResponse::from)
         .toList();
+    return PageResponse.of(content, total, request.getPage(), request.getSize());
   }
 
   /**

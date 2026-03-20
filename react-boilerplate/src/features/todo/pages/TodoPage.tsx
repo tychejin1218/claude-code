@@ -1,14 +1,31 @@
 import { useState } from 'react';
 import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo } from '@/features/todo/hooks/useTodos';
 import TodoItem from '@/features/todo/components/TodoItem';
+import type { TodoFilter, TodoListParams, TodoSort } from '@/features/todo/types/todo';
+
+const PAGE_SIZE = 10;
+
+const FILTER_TABS: { label: string; value: TodoFilter }[] = [
+  { label: '전체', value: 'all' },
+  { label: '미완료', value: 'incomplete' },
+  { label: '완료', value: 'completed' },
+];
 
 const TodoPage = () => {
   const [input, setInput] = useState('');
+  const [filter, setFilter] = useState<TodoFilter>('all');
+  const [sort, setSort] = useState<TodoSort>('id');
+  const [page, setPage] = useState(0);
 
-  const { data: todos, isLoading } = useTodos();
-  const createTodo = useCreateTodo();
-  const completeTodo = useCompleteTodo();
-  const deleteTodo = useDeleteTodo();
+  const params: TodoListParams = { page, size: PAGE_SIZE, status: filter, sort };
+
+  const { data: pageData, isLoading } = useTodos(params);
+  const createTodo = useCreateTodo(params);
+  const completeTodo = useCompleteTodo(params);
+  const deleteTodo = useDeleteTodo(params);
+
+  const todos = pageData?.content ?? [];
+  const totalPages = pageData?.totalPages ?? 1;
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,6 +33,16 @@ const TodoPage = () => {
     if (!title) return;
     createTodo.mutate({ title });
     setInput('');
+  };
+
+  const handleFilterChange = (newFilter: TodoFilter) => {
+    setFilter(newFilter);
+    setPage(0);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSort(e.target.value as TodoSort);
+    setPage(0);
   };
 
   return (
@@ -39,14 +66,40 @@ const TodoPage = () => {
         </button>
       </form>
 
+      <div className="mb-4 flex items-center justify-between border-b border-gray-200">
+        <div className="flex gap-1">
+          {FILTER_TABS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => handleFilterChange(tab.value)}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                filter === tab.value
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <select
+          value={sort}
+          onChange={handleSortChange}
+          className="mb-1 rounded border border-gray-200 px-2 py-1 text-xs text-gray-600 focus:outline-none"
+        >
+          <option value="id">최신순</option>
+          <option value="title">제목순</option>
+        </select>
+      </div>
+
       {isLoading && <p className="text-sm text-gray-400">불러오는 중...</p>}
 
-      {todos && todos.length === 0 && (
+      {!isLoading && todos.length === 0 && (
         <p className="text-sm text-gray-400">할 일이 없습니다. 추가해보세요!</p>
       )}
 
       <ul className="flex flex-col gap-2">
-        {todos?.map((todo) => (
+        {todos.map((todo) => (
           <TodoItem
             key={todo.id}
             todo={todo}
@@ -55,6 +108,28 @@ const TodoPage = () => {
           />
         ))}
       </ul>
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-center gap-2">
+          <button
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 0}
+            className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            이전
+          </button>
+          <span className="text-sm text-gray-600">
+            {page + 1} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={pageData?.last ?? true}
+            className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            다음
+          </button>
+        </div>
+      )}
     </div>
   );
 };

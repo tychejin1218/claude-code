@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { ok, err } from '@/mocks/response';
-import type { Todo } from '@/features/todo/types/todo';
+import type { Todo, PageResponse } from '@/features/todo/types/todo';
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:9091/api';
 
@@ -11,7 +11,31 @@ let todos: Todo[] = [
 let nextId = 3;
 
 export const todoHandlers = [
-  http.get(`${BASE}/todos`, () => HttpResponse.json(ok(todos))),
+  http.get(`${BASE}/todos`, ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') ?? 0);
+    const size = Number(url.searchParams.get('size') ?? 10);
+    const status = url.searchParams.get('status') ?? 'all';
+
+    let filtered = todos;
+    if (status === 'completed') filtered = todos.filter((t) => t.completed);
+    if (status === 'incomplete') filtered = todos.filter((t) => !t.completed);
+
+    const totalElements = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalElements / size));
+    const content = filtered.slice(page * size, (page + 1) * size);
+
+    const pageResponse: PageResponse<Todo> = {
+      content,
+      page,
+      size,
+      totalElements,
+      totalPages,
+      last: (page + 1) * size >= totalElements,
+    };
+
+    return HttpResponse.json(ok(pageResponse));
+  }),
 
   http.post(`${BASE}/todos`, async ({ request }) => {
     const { title } = (await request.json()) as { title: string };
