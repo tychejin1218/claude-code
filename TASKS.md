@@ -30,11 +30,11 @@
 ## Phase 2 — 인증 강화
 
 ### 4. RBAC (역할 기반 접근 제어)
-- [ ] BE: `Member`에 `role` 필드 추가 (`ROLE_USER`, `ROLE_ADMIN`)
-- [ ] BE: 관리자 전용 API 엔드포인트 추가 (`/api/admin/**`)
-- [ ] BE: `@PreAuthorize("hasRole('ADMIN')")` 적용
-- [ ] FE: 역할별 라우트 보호 (`AdminRoute` 컴포넌트)
-- [ ] FE: 관리자 페이지 기본 틀 추가
+- [x] BE: `Member`에 `role` 필드 추가 (`ROLE_USER`, `ROLE_ADMIN`)
+- [x] BE: 관리자 전용 API 엔드포인트 추가 (`/api/admin/**`)
+- [x] BE: `@PreAuthorize("hasRole('ADMIN')")` 적용
+- [x] FE: 역할별 라우트 보호 (`AdminRoute` 컴포넌트)
+- [x] FE: 관리자 페이지 기본 틀 추가
 
 ### 5. 소셜 로그인 (Google OAuth2)
 - [ ] BE: Spring Security OAuth2 설정 (`application.yml`)
@@ -88,7 +88,7 @@
 | 1 | Soft Delete | 완료 |
 | 2 | 페이지네이션 + 필터링 | 완료 |
 | 3 | 테스트 작성 | 완료 |
-| 4 | RBAC | 대기 |
+| 4 | RBAC | 완료 |
 | 5 | 소셜 로그인 | 대기 |
 | 6 | Rate Limiting | 대기 |
 | 7 | 파일 업로드 | 대기 |
