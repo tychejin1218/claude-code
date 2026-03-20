@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo } from '@/features/todo/hooks/useTodos';
 import TodoItem from '@/features/todo/components/TodoItem';
 import type { TodoFilter, TodoListParams, TodoSort } from '@/features/todo/types/todo';
@@ -17,7 +17,10 @@ const TodoPage = () => {
   const [sort, setSort] = useState<TodoSort>('id');
   const [page, setPage] = useState(0);
 
-  const params: TodoListParams = { page, size: PAGE_SIZE, status: filter, sort };
+  const params = useMemo<TodoListParams>(
+    () => ({ page, size: PAGE_SIZE, status: filter, sort }),
+    [page, filter, sort],
+  );
 
   const { data: pageData, isLoading } = useTodos(params);
   const createTodo = useCreateTodo(params);

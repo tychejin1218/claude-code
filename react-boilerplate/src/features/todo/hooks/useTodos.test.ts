@@ -10,15 +10,15 @@ const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  return ({ children }: { children: React.ReactNode }) =>
+  const wrapper = ({ children }: { children: React.ReactNode }) =>
     createElement(QueryClientProvider, { client: queryClient }, children);
+  return { queryClient, wrapper };
 };
 
 describe('useTodos', () => {
   it('할 일 목록을 페이지 응답으로 반환한다', async () => {
-    const { result } = renderHook(() => useTodos(defaultParams), {
-      wrapper: createWrapper(),
-    });
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useTodos(defaultParams), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -28,10 +28,9 @@ describe('useTodos', () => {
   });
 
   it('completed 필터로 완료된 항목만 반환한다', async () => {
+    const { wrapper } = createWrapper();
     const params: TodoListParams = { page: 0, size: 10, status: 'completed', sort: 'id' };
-    const { result } = renderHook(() => useTodos(params), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(() => useTodos(params), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -39,10 +38,9 @@ describe('useTodos', () => {
   });
 
   it('incomplete 필터로 미완료 항목만 반환한다', async () => {
+    const { wrapper } = createWrapper();
     const params: TodoListParams = { page: 0, size: 10, status: 'incomplete', sort: 'id' };
-    const { result } = renderHook(() => useTodos(params), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(() => useTodos(params), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -52,13 +50,8 @@ describe('useTodos', () => {
 
 describe('useCreateTodo', () => {
   it('할 일 추가 성공 시 쿼리를 무효화한다', async () => {
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
+    const { queryClient, wrapper } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
-
-    const wrapper = ({ children }: { children: React.ReactNode }) =>
-      createElement(QueryClientProvider, { client: queryClient }, children);
 
     const { result } = renderHook(() => useCreateTodo(defaultParams), { wrapper });
 
@@ -71,13 +64,8 @@ describe('useCreateTodo', () => {
 
 describe('useCompleteTodo', () => {
   it('완료 처리 성공 시 쿼리를 무효화한다', async () => {
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
+    const { queryClient, wrapper } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
-
-    const wrapper = ({ children }: { children: React.ReactNode }) =>
-      createElement(QueryClientProvider, { client: queryClient }, children);
 
     const { result } = renderHook(() => useCompleteTodo(defaultParams), { wrapper });
 
@@ -90,13 +78,8 @@ describe('useCompleteTodo', () => {
 
 describe('useDeleteTodo', () => {
   it('삭제 성공 시 쿼리를 무효화한다', async () => {
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
+    const { queryClient, wrapper } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
-
-    const wrapper = ({ children }: { children: React.ReactNode }) =>
-      createElement(QueryClientProvider, { client: queryClient }, children);
 
     const { result } = renderHook(() => useDeleteTodo(defaultParams), { wrapper });
 

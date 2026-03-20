@@ -19,6 +19,10 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TodoQueryRepository {
 
+  private static final String STATUS_COMPLETED = "completed";
+  private static final String STATUS_INCOMPLETE = "incomplete";
+  private static final String SORT_TITLE = "title";
+
   private final JPAQueryFactory jpaQueryFactory;
 
   /**
@@ -71,16 +75,16 @@ public class TodoQueryRepository {
   private BooleanBuilder buildCondition(QTodo todo, QMember member, String email, String status) {
     BooleanBuilder builder = new BooleanBuilder();
     builder.and(member.email.eq(email));
-    if ("completed".equals(status)) {
+    if (STATUS_COMPLETED.equals(status)) {
       builder.and(todo.completed.isTrue());
-    } else if ("incomplete".equals(status)) {
+    } else if (STATUS_INCOMPLETE.equals(status)) {
       builder.and(todo.completed.isFalse());
     }
     return builder;
   }
 
   private OrderSpecifier<?> buildOrder(QTodo todo, String sort) {
-    if ("title".equals(sort)) {
+    if (SORT_TITLE.equals(sort)) {
       return todo.title.asc();
     }
     return todo.id.desc();
