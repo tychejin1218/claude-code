@@ -37,11 +37,7 @@
 - [x] FE: 관리자 페이지 기본 틀 추가
 
 ### 5. 소셜 로그인 (Google OAuth2)
-- [ ] BE: Spring Security OAuth2 설정 (`application.yml`)
-- [ ] BE: OAuth2 성공 핸들러 → JWT 발급 연동
-- [ ] BE: 소셜 가입 시 Member 자동 생성
-- [ ] FE: 로그인 페이지에 Google 로그인 버튼 추가
-- [ ] FE: OAuth2 콜백 처리 라우트 추가
+> Google Cloud Console 연동 필요 — 생략
 
 ### 6. Rate Limiting
 - [ ] BE: Redis 기반 요청 카운터 구현 (또는 Bucket4j)
@@ -89,7 +85,7 @@
 | 2 | 페이지네이션 + 필터링 | 완료 |
 | 3 | 테스트 작성 | 완료 |
 | 4 | RBAC | 완료 |
-| 5 | 소셜 로그인 | 대기 |
+| 5 | 소셜 로그인 | 생략 |
 | 6 | Rate Limiting | 대기 |
 | 7 | 파일 업로드 | 대기 |
 | 8 | 실시간 알림 (SSE) | 대기 |
