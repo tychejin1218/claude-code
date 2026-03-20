@@ -13,17 +13,17 @@
 - [x] FE: 삭제 후 UI 동작 확인 (변경 없어야 함)
 
 ### 2. 페이지네이션 + 필터링
-- [ ] BE: Todo 목록 API에 `page`, `size`, `sort`, `status` 파라미터 추가 (QueryDSL)
-- [ ] BE: `PageResponse<T>` 공통 응답 래퍼 추가
-- [ ] FE: Todo 목록에 페이지 UI 또는 무한 스크롤 (`useInfiniteQuery`)
-- [ ] FE: 완료/미완료 필터 탭 추가
+- [x] BE: Todo 목록 API에 `page`, `size`, `sort`, `status` 파라미터 추가 (QueryDSL)
+- [x] BE: `PageResponse<T>` 공통 응답 래퍼 추가
+- [x] FE: Todo 목록에 페이지 UI (이전/다음 버튼)
+- [x] FE: 완료/미완료 필터 탭 추가
 
 ### 3. 테스트 작성
 - [x] BE: `TodoService` 단위 테스트
-- [ ] BE: `AuthService` 단위 테스트
+- [x] BE: `AuthService` 단위 테스트
 - [x] BE: `TodoController` MockMvc 통합 테스트
-- [ ] FE: `useTodos` 훅 Vitest 테스트 (MSW 활용)
-- [ ] FE: Playwright E2E — 로그인 → Todo 생성 → 완료 → 삭제
+- [x] FE: `useTodos` 훅 Vitest 테스트 (MSW 활용)
+- [x] FE: Playwright E2E — 로그인 → Todo 생성 → 완료 → 삭제
 
 ---
 
@@ -86,8 +86,8 @@
 | # | 태스크 | 상태 |
 |---|---|---|
 | 1 | Soft Delete | 완료 |
-| 2 | 페이지네이션 + 필터링 | 대기 |
-| 3 | 테스트 작성 | 진행 중 |
+| 2 | 페이지네이션 + 필터링 | 완료 |
+| 3 | 테스트 작성 | 완료 |
 | 4 | RBAC | 대기 |
 | 5 | 소셜 로그인 | 대기 |
 | 6 | Rate Limiting | 대기 |

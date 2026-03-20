@@ -3,15 +3,18 @@ package com.example.api.todo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.example.api.common.exception.ApiException;
+import com.example.api.common.response.PageResponse;
 import com.example.api.domain.entity.Member;
 import com.example.api.domain.entity.Todo;
 import com.example.api.domain.repository.MemberRepository;
 import com.example.api.domain.repository.TodoRepository;
 import com.example.api.todo.dto.TodoDto;
+import com.example.api.todo.repository.TodoQueryRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +42,9 @@ class TodoServiceTest {
   private TodoRepository todoRepository;
 
   @Mock
+  private TodoQueryRepository todoQueryRepository;
+
+  @Mock
   private MemberRepository memberRepository;
 
   @Test
@@ -46,6 +52,7 @@ class TodoServiceTest {
   @DisplayName("할 일 목록 조회 - 성공")
   void getTodoList_success() {
     // given
+    TodoDto.TodoListRequest request = new TodoDto.TodoListRequest();
     Member member = Member.builder()
         .id(1L)
         .email("test@example.com")
@@ -64,19 +71,23 @@ class TodoServiceTest {
         .completed(true)
         .member(member)
         .build();
-    given(todoRepository.findByMemberEmailOrderByIdDesc("test@example.com"))
-        .willReturn(List.of(todo1, todo2));
+    given(todoQueryRepository.selectTodoList(eq("test@example.com"), any())).willReturn(
+        List.of(todo1, todo2));
+    given(todoQueryRepository.selectTodoCount(eq("test@example.com"), any())).willReturn(2L);
 
     // when
-    List<TodoDto.TodoResponse> result = todoService.getTodoList("test@example.com");
+    PageResponse<TodoDto.TodoResponse> result = todoService.getTodoList("test@example.com",
+        request);
 
     // then
-    assertThat(result).hasSize(2);
-    assertThat(result.get(0).getId()).isEqualTo(2L);
-    assertThat(result.get(0).getTitle()).isEqualTo("스프링 부트 공부하기");
-    assertThat(result.get(0).isCompleted()).isFalse();
-    assertThat(result.get(1).getId()).isEqualTo(1L);
-    assertThat(result.get(1).isCompleted()).isTrue();
+    assertThat(result.getContent()).hasSize(2);
+    assertThat(result.getTotalElements()).isEqualTo(2L);
+    assertThat(result.getPage()).isEqualTo(0);
+    assertThat(result.getContent().get(0).getId()).isEqualTo(2L);
+    assertThat(result.getContent().get(0).getTitle()).isEqualTo("스프링 부트 공부하기");
+    assertThat(result.getContent().get(0).isCompleted()).isFalse();
+    assertThat(result.getContent().get(1).getId()).isEqualTo(1L);
+    assertThat(result.getContent().get(1).isCompleted()).isTrue();
   }
 
   @Test
@@ -84,14 +95,17 @@ class TodoServiceTest {
   @DisplayName("할 일 목록 조회 - 빈 목록")
   void getTodoList_empty() {
     // given
-    given(todoRepository.findByMemberEmailOrderByIdDesc("test@example.com"))
-        .willReturn(List.of());
+    TodoDto.TodoListRequest request = new TodoDto.TodoListRequest();
+    given(todoQueryRepository.selectTodoList(eq("test@example.com"), any())).willReturn(List.of());
+    given(todoQueryRepository.selectTodoCount(eq("test@example.com"), any())).willReturn(0L);
 
     // when
-    List<TodoDto.TodoResponse> result = todoService.getTodoList("test@example.com");
+    PageResponse<TodoDto.TodoResponse> result = todoService.getTodoList("test@example.com",
+        request);
 
     // then
-    assertThat(result).isEmpty();
+    assertThat(result.getContent()).isEmpty();
+    assertThat(result.getTotalElements()).isEqualTo(0L);
   }
 
   @Test
@@ -219,7 +233,7 @@ class TodoServiceTest {
     todoService.deleteTodo("test@example.com", 1L);
 
     // then
-    verify(todoRepository).delete(todo);
+    verify(todoRepository).findByIdAndMemberEmail(1L, "test@example.com");
   }
 
   @Test

@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.api.common.exception.ApiException;
+import com.example.api.common.response.PageResponse;
 import com.example.api.common.type.ApiStatus;
 import com.example.api.todo.dto.TodoDto;
 import com.example.api.todo.service.TodoService;
@@ -72,22 +73,26 @@ class TodoControllerTest {
   @DisplayName("GET /todos - 성공")
   void getTodoList_success() throws Exception {
     // given
-    List<TodoDto.TodoResponse> responseList = List.of(
+    List<TodoDto.TodoResponse> content = List.of(
         TodoDto.TodoResponse.builder().id(2L).title("스프링 부트 공부하기").completed(false).build(),
         TodoDto.TodoResponse.builder().id(1L).title("테스트 코드 작성하기").completed(true).build()
     );
-    given(todoService.getTodoList("test@example.com")).willReturn(responseList);
+    PageResponse<TodoDto.TodoResponse> pageResponse = PageResponse.of(content, 2L, 0, 10);
+    given(todoService.getTodoList(eq("test@example.com"), any(TodoDto.TodoListRequest.class)))
+        .willReturn(pageResponse);
 
     // when & then
     mockMvc.perform(get("/todos").with(authentication(auth)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.statusCode").value("200"))
-        .andExpect(jsonPath("$.data").isArray())
-        .andExpect(jsonPath("$.data[0].id").value(2))
-        .andExpect(jsonPath("$.data[0].title").value("스프링 부트 공부하기"))
-        .andExpect(jsonPath("$.data[0].completed").value(false))
-        .andExpect(jsonPath("$.data[1].id").value(1))
-        .andExpect(jsonPath("$.data[1].completed").value(true));
+        .andExpect(jsonPath("$.data.content").isArray())
+        .andExpect(jsonPath("$.data.content[0].id").value(2))
+        .andExpect(jsonPath("$.data.content[0].title").value("스프링 부트 공부하기"))
+        .andExpect(jsonPath("$.data.content[0].completed").value(false))
+        .andExpect(jsonPath("$.data.content[1].id").value(1))
+        .andExpect(jsonPath("$.data.content[1].completed").value(true))
+        .andExpect(jsonPath("$.data.totalElements").value(2))
+        .andExpect(jsonPath("$.data.page").value(0));
   }
 
   @Test

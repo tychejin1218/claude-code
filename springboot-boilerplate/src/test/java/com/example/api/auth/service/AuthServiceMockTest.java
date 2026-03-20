@@ -210,4 +210,45 @@ class AuthServiceMockTest {
     assertThatThrownBy(() -> authService.refresh(request))
         .isInstanceOf(ApiException.class);
   }
+
+  @Test
+  @Order(9)
+  @DisplayName("회원가입 - 성공")
+  void register_success() {
+    // given
+    AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
+        .email("new@example.com")
+        .name("신규회원")
+        .password("password123")
+        .build();
+    given(memberRepository.existsByEmail("new@example.com")).willReturn(false);
+    given(passwordEncoder.encode("password123")).willReturn("encodedPassword");
+    given(jwtTokenProvider.createAccessToken("new@example.com")).willReturn("accessToken");
+    given(jwtTokenProvider.createRefreshToken("new@example.com")).willReturn("refreshToken");
+
+    // when
+    AuthDto.TokenResponse response = authService.register(request);
+
+    // then
+    assertThat(response.getAccessToken()).isEqualTo("accessToken");
+    assertThat(response.getRefreshToken()).isEqualTo("refreshToken");
+    verify(memberRepository).save(any(Member.class));
+  }
+
+  @Test
+  @Order(10)
+  @DisplayName("회원가입 - 이메일 중복")
+  void register_duplicatedEmail() {
+    // given
+    AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
+        .email("test@example.com")
+        .name("테스트")
+        .password("password123")
+        .build();
+    given(memberRepository.existsByEmail("test@example.com")).willReturn(true);
+
+    // when & then
+    assertThatThrownBy(() -> authService.register(request))
+        .isInstanceOf(ApiException.class);
+  }
 }
