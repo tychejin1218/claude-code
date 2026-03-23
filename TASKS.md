@@ -57,10 +57,10 @@
 - [x] FE: Todo에 이미지 첨부 기능
 
 ### 8. 실시간 알림 (SSE)
-- [ ] BE: SSE 엔드포인트 추가 (`/api/notifications/subscribe`)
-- [ ] BE: Todo 완료 시 이벤트 발행 (`ApplicationEventPublisher`)
-- [ ] FE: SSE 구독 훅 (`useNotifications`)
-- [ ] FE: Toast 알림 UI 연동
+- [x] BE: SSE 엔드포인트 추가 (`/api/notifications/subscribe`)
+- [x] BE: Todo 완료 시 이벤트 발행 (`ApplicationEventPublisher`)
+- [x] FE: SSE 구독 훅 (`useNotifications`)
+- [x] FE: Toast 알림 UI 연동
 
 ---
 
@@ -90,6 +90,6 @@
 | 5 | 소셜 로그인 | 생략 |
 | 6 | Rate Limiting | 완료 |
 | 7 | 파일 업로드 | 완료 |
-| 8 | 실시간 알림 (SSE) | 대기 |
+| 8 | 실시간 알림 (SSE) | 완료 |
 | 9 | 모니터링 | 대기 |
 | 10 | API 문서 개선 | 대기 |
