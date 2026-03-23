@@ -46,10 +46,13 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
 
-# AWS 설정
+# AWS 설정 (로컬: MinIO Docker 사용)
 aws:
   profile: default
   s3:
-    region: ap-northeast-2
-    bucket-name: your-bucket-name
+    region: us-east-1
+    bucket-name: boilerplate-bucket
     presigned-url-expiry-minutes: 5
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
