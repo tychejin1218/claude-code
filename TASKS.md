@@ -64,9 +64,9 @@
 ### 8. Refresh Token Rotation
 > 현재는 Refresh Token이 갱신되지 않아 탈취 시 장기 노출 위험
 
-- [ ] BE: 토큰 갱신 시 새 Refresh Token 발급 + 기존 토큰 폐기
-- [ ] BE: Redis에서 Refresh Token 단일 사용 검증 (재사용 감지)
-- [ ] FE: 갱신 로직은 이미 구현됨 — BE 응답 형식 맞게 확인
+- [x] BE: 토큰 갱신 시 새 Refresh Token 발급 + 기존 토큰 폐기
+- [x] BE: Redis에서 Refresh Token 단일 사용 검증 (재사용 감지)
+- [x] FE: 갱신 로직은 이미 구현됨 — BE 응답 형식 맞게 확인
 
 ### 9. 이메일 인증
 - [ ] BE: 회원가입 시 인증 메일 발송 (JavaMailSender + Redis 토큰 저장)
@@ -106,7 +106,7 @@
 | 5 | Rate Limiting | 완료 |
 | 6 | 파일 업로드 | 완료 |
 | 7 | 실시간 알림 (SSE) | 완료 |
-| 8 | Refresh Token Rotation | 대기 |
+| 8 | Refresh Token Rotation | 완료 |
 | 9 | 이메일 인증 | 대기 |
 | 10 | 앱 컨테이너화 | 대기 |
 | 11 | 모니터링 | 대기 |
