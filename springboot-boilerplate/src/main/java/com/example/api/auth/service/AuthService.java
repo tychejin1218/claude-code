@@ -97,7 +97,14 @@ public class AuthService {
     String subject = jwtTokenProvider.getSubject(refreshToken);
     String storedToken = redisComponent.getStringValue(RedisKeys.REFRESH_TOKEN.getKey() + subject);
 
-    if (StringUtils.isBlank(storedToken) || !storedToken.equals(refreshToken)) {
+    if (StringUtils.isBlank(storedToken)) {
+      throw new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED);
+    }
+
+    if (!storedToken.equals(refreshToken)) {
+      // Refresh Token 재사용 감지 — 탈취 가능성으로 모든 세션 무효화
+      log.warn("Refresh Token 재사용 감지 (email={}): 모든 세션 무효화", subject);
+      redisComponent.deleteKey(RedisKeys.REFRESH_TOKEN.getKey() + subject);
       throw new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED);
     }
 

@@ -61,41 +61,34 @@
 
 ## Phase 4 — 운영 준비
 
-### 8. DB 마이그레이션 (Flyway)
-> `init.sql` 수동 관리 → Flyway 버전 관리로 전환
-
-- [ ] BE: Flyway 의존성 추가 및 설정
-- [ ] BE: 기존 DDL을 `V1__init.sql`로 마이그레이션
-- [ ] BE: 이후 스키마 변경은 `V2__...sql` 방식으로 관리
-
-### 9. Refresh Token Rotation
+### 8. Refresh Token Rotation
 > 현재는 Refresh Token이 갱신되지 않아 탈취 시 장기 노출 위험
 
 - [ ] BE: 토큰 갱신 시 새 Refresh Token 발급 + 기존 토큰 폐기
 - [ ] BE: Redis에서 Refresh Token 단일 사용 검증 (재사용 감지)
 - [ ] FE: 갱신 로직은 이미 구현됨 — BE 응답 형식 맞게 확인
 
-### 10. 이메일 인증
+### 9. 이메일 인증
 - [ ] BE: 회원가입 시 인증 메일 발송 (JavaMailSender + Redis 토큰 저장)
 - [ ] BE: 이메일 인증 확인 API (`GET /auth/verify-email?token=`)
 - [ ] FE: 인증 메일 안내 페이지 및 재발송 버튼
 
-### 11. 앱 컨테이너화
+### 10. 앱 컨테이너화
 - [ ] BE: `Dockerfile` 작성 (멀티 스테이지 빌드)
 - [ ] FE: `Dockerfile` 작성 (nginx 기반)
 - [ ] Infra: `docker-compose.yml`에 앱 서비스 추가 (전체 스택 단일 명령 실행)
 
-### 12. 모니터링 (Actuator + Prometheus + Grafana)
+### 11. 모니터링 (Actuator + Prometheus + Grafana)
 - [ ] BE: Spring Actuator 엔드포인트 활성화 (`/actuator/health`, `/actuator/metrics`)
 - [ ] BE: Micrometer 커스텀 메트릭 추가 (Todo 생성 수 등)
 - [ ] Infra: Docker Compose에 Prometheus + Grafana 추가
 
-### 13. 캐시 전략 (Redis `@Cacheable`)
+### 12. 캐시 전략 (Redis `@Cacheable`)
 - [ ] BE: `@EnableCaching` 설정 및 `CacheManager` 빈 등록
 - [ ] BE: 자주 조회되는 데이터에 `@Cacheable` 적용
 - [ ] BE: 변경 시 `@CacheEvict`로 캐시 무효화
 
-### 14. 비밀번호 재설정
+### 13. 비밀번호 재설정
 - [ ] BE: 재설정 링크 발송 API (`POST /auth/password/reset-request`)
 - [ ] BE: 새 비밀번호 설정 API (`POST /auth/password/reset`)
 - [ ] FE: 비밀번호 찾기 / 재설정 페이지
@@ -113,10 +106,9 @@
 | 5 | Rate Limiting | 완료 |
 | 6 | 파일 업로드 | 완료 |
 | 7 | 실시간 알림 (SSE) | 완료 |
-| 8 | DB 마이그레이션 (Flyway) | 대기 |
-| 9 | Refresh Token Rotation | 대기 |
-| 10 | 이메일 인증 | 대기 |
-| 11 | 앱 컨테이너화 | 대기 |
-| 12 | 모니터링 | 대기 |
-| 13 | 캐시 전략 | 대기 |
-| 14 | 비밀번호 재설정 | 대기 |
+| 8 | Refresh Token Rotation | 대기 |
+| 9 | 이메일 인증 | 대기 |
+| 10 | 앱 컨테이너화 | 대기 |
+| 11 | 모니터링 | 대기 |
+| 12 | 캐시 전략 | 대기 |
+| 13 | 비밀번호 재설정 | 대기 |

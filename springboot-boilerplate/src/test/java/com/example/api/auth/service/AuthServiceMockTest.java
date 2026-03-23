@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.example.api.auth.dto.AuthDto;
@@ -202,24 +203,45 @@ class AuthServiceMockTest {
 
   @Test
   @Order(8)
-  @DisplayName("토큰 재발급 - Redis 저장 토큰 불일치")
-  void refresh_tokenMismatch() {
+  @DisplayName("토큰 재발급 - Redis 저장 토큰 없음 (로그아웃 상태)")
+  void refresh_storedTokenBlank() {
     // given
     AuthDto.RefreshRequest request = AuthDto.RefreshRequest.builder()
         .refreshToken("validToken")
         .build();
     given(jwtTokenProvider.validateToken("validToken")).willReturn(true);
     given(jwtTokenProvider.getSubject("validToken")).willReturn("test@example.com");
-    given(redisComponent.getStringValue("APP:REFRESH_TOKEN:test@example.com"))
-        .willReturn("otherToken");
+    given(redisComponent.getStringValue("APP:REFRESH_TOKEN:test@example.com")).willReturn(null);
 
     // when & then
     assertThatThrownBy(() -> authService.refresh(request))
         .isInstanceOf(ApiException.class);
+    verify(redisComponent, never()).deleteKey(any());
   }
 
   @Test
   @Order(9)
+  @DisplayName("토큰 재발급 - Refresh Token 재사용 감지 시 모든 세션 무효화")
+  void refresh_reuseDetected() {
+    // given
+    AuthDto.RefreshRequest request = AuthDto.RefreshRequest.builder()
+        .refreshToken("oldToken")
+        .build();
+    given(jwtTokenProvider.validateToken("oldToken")).willReturn(true);
+    given(jwtTokenProvider.getSubject("oldToken")).willReturn("test@example.com");
+    // Redis에는 이미 교체된 새 토큰이 저장되어 있음
+    given(redisComponent.getStringValue("APP:REFRESH_TOKEN:test@example.com"))
+        .willReturn("newToken");
+
+    // when & then
+    assertThatThrownBy(() -> authService.refresh(request))
+        .isInstanceOf(ApiException.class);
+    // 재사용 감지 시 Redis 키 삭제로 모든 세션 무효화
+    verify(redisComponent).deleteKey("APP:REFRESH_TOKEN:test@example.com");
+  }
+
+  @Test
+  @Order(10)
   @DisplayName("회원가입 - 성공")
   void register_success() {
     // given
@@ -250,7 +272,7 @@ class AuthServiceMockTest {
   }
 
   @Test
-  @Order(10)
+  @Order(11)
   @DisplayName("회원가입 - 이메일 중복")
   void register_duplicatedEmail() {
     // given
