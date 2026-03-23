@@ -1,7 +1,7 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createElement } from 'react';
-import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo } from './useTodos';
+import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo, useUploadTodoImage } from './useTodos';
 import type { TodoListParams } from '@/features/todo/types/todo';
 
 const defaultParams: TodoListParams = { page: 0, size: 10, status: 'all', sort: 'id' };
@@ -86,6 +86,23 @@ describe('useDeleteTodo', () => {
     result.current.mutate(1);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(invalidateSpy).toHaveBeenCalled();
+  });
+});
+
+describe('useUploadTodoImage', () => {
+  it('이미지 업로드 성공 시 쿼리를 무효화한다', async () => {
+    const { queryClient, wrapper } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useUploadTodoImage(defaultParams), { wrapper });
+
+    const mockFile = new File(['content'], 'image.png', { type: 'image/png' });
+
+    await act(async () => {
+      await result.current(2, mockFile);
+    });
+
     expect(invalidateSpy).toHaveBeenCalled();
   });
 });

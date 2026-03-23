@@ -261,4 +261,68 @@ class TodoServiceTest {
     assertThatThrownBy(() -> todoService.deleteTodo("other@example.com", 1L))
         .isInstanceOf(ApiException.class);
   }
+
+  @Test
+  @Order(11)
+  @DisplayName("할 일 이미지 URL 업데이트 - 성공")
+  void updateTodoImage_success() {
+    // given
+    Member member = Member.builder()
+        .id(1L)
+        .email("test@example.com")
+        .name("홍길동")
+        .password("encodedPassword")
+        .build();
+    Todo todo = Todo.builder()
+        .id(1L)
+        .title("스프링 부트 공부하기")
+        .completed(false)
+        .member(member)
+        .build();
+    TodoDto.UpdateImageRequest request = TodoDto.UpdateImageRequest.builder()
+        .imageUrl("http://localhost:9000/boilerplate-bucket/uuid/image.png")
+        .build();
+    given(todoRepository.findByIdAndMemberEmail(1L, "test@example.com"))
+        .willReturn(Optional.of(todo));
+
+    // when
+    TodoDto.TodoResponse result = todoService.updateTodoImage("test@example.com", 1L, request);
+
+    // then
+    assertThat(result.getId()).isEqualTo(1L);
+    assertThat(result.getImageUrl())
+        .isEqualTo("http://localhost:9000/boilerplate-bucket/uuid/image.png");
+  }
+
+  @Test
+  @Order(12)
+  @DisplayName("할 일 이미지 URL 업데이트 - 존재하지 않는 할 일")
+  void updateTodoImage_notFound() {
+    // given
+    TodoDto.UpdateImageRequest request = TodoDto.UpdateImageRequest.builder()
+        .imageUrl("http://localhost:9000/boilerplate-bucket/uuid/image.png")
+        .build();
+    given(todoRepository.findByIdAndMemberEmail(999L, "test@example.com"))
+        .willReturn(Optional.empty());
+
+    // when & then
+    assertThatThrownBy(() -> todoService.updateTodoImage("test@example.com", 999L, request))
+        .isInstanceOf(ApiException.class);
+  }
+
+  @Test
+  @Order(13)
+  @DisplayName("할 일 이미지 URL 업데이트 - 다른 사용자의 할 일 접근")
+  void updateTodoImage_otherUserTodo() {
+    // given
+    TodoDto.UpdateImageRequest request = TodoDto.UpdateImageRequest.builder()
+        .imageUrl("http://localhost:9000/boilerplate-bucket/uuid/image.png")
+        .build();
+    given(todoRepository.findByIdAndMemberEmail(1L, "other@example.com"))
+        .willReturn(Optional.empty());
+
+    // when & then
+    assertThatThrownBy(() -> todoService.updateTodoImage("other@example.com", 1L, request))
+        .isInstanceOf(ApiException.class);
+  }
 }
