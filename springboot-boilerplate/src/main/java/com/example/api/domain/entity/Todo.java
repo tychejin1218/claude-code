@@ -41,6 +41,9 @@ public class Todo extends BaseAudit {
   @Column(name = "completed", nullable = false)
   private boolean completed;
 
+  @Column(name = "image_url", length = 500)
+  private String imageUrl;
+
   @ToString.Exclude
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
@@ -51,6 +54,15 @@ public class Todo extends BaseAudit {
    */
   public void complete() {
     this.completed = true;
+  }
+
+  /**
+   * 이미지 URL 업데이트
+   *
+   * @param url 업로드된 이미지 URL
+   */
+  public void updateImage(String url) {
+    this.imageUrl = url;
   }
 
   /**

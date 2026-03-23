@@ -54,6 +54,21 @@ public class TodoDto {
   }
 
   /**
+   * 이미지 URL 업데이트 요청
+   */
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Schema(description = "이미지 URL 업데이트 요청")
+  public static class UpdateImageRequest {
+
+    @Schema(description = "업로드된 이미지 URL", example = "http://localhost:9000/boilerplate-bucket/uuid/image.png")
+    @NotBlank(message = "이미지 URL을 입력해주세요.")
+    private String imageUrl;
+  }
+
+  /**
    * 할 일 응답
    */
   @Getter
@@ -72,6 +87,9 @@ public class TodoDto {
     @Schema(description = "완료 여부", example = "false")
     private boolean completed;
 
+    @Schema(description = "이미지 URL", example = "http://localhost:9000/boilerplate-bucket/uuid/image.png")
+    private String imageUrl;
+
     /**
      * Entity → Response DTO 변환
      *
@@ -83,6 +101,7 @@ public class TodoDto {
           .id(todo.getId())
           .title(todo.getTitle())
           .completed(todo.isCompleted())
+          .imageUrl(todo.getImageUrl())
           .build();
     }
   }

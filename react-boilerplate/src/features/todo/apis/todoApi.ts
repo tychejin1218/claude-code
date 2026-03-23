@@ -13,5 +13,8 @@ export const postTodo = (data: CreateTodoRequest): Promise<ApiResponse<Todo>> =>
 export const patchTodoComplete = (id: number): Promise<ApiResponse<Todo>> =>
   api.patch<ApiResponse<Todo>>(`/todos/${id}/complete`).then((res) => res.data);
 
+export const patchTodoImage = (id: number, imageUrl: string): Promise<ApiResponse<Todo>> =>
+  api.patch<ApiResponse<Todo>>(`/todos/${id}/image`, { imageUrl }).then((res) => res.data);
+
 export const deleteTodo = (id: number): Promise<ApiResponse<null>> =>
   api.delete<ApiResponse<null>>(`/todos/${id}`).then((res) => res.data);

@@ -1,5 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useTodos, useCreateTodo, useCompleteTodo, useDeleteTodo } from '@/features/todo/hooks/useTodos';
+import {
+  useTodos,
+  useCreateTodo,
+  useCompleteTodo,
+  useDeleteTodo,
+  useUploadTodoImage,
+} from '@/features/todo/hooks/useTodos';
 import TodoItem from '@/features/todo/components/TodoItem';
 import type { TodoFilter, TodoListParams, TodoSort } from '@/features/todo/types/todo';
 
@@ -26,6 +32,7 @@ const TodoPage = () => {
   const createTodo = useCreateTodo(params);
   const completeTodo = useCompleteTodo(params);
   const deleteTodo = useDeleteTodo(params);
+  const uploadTodoImage = useUploadTodoImage(params);
 
   const todos = pageData?.content ?? [];
   const totalPages = pageData?.totalPages ?? 1;
@@ -108,6 +115,7 @@ const TodoPage = () => {
             todo={todo}
             onComplete={(id) => completeTodo.mutate(id)}
             onDelete={(id) => deleteTodo.mutate(id)}
+            onUpload={uploadTodoImage}
           />
         ))}
       </ul>

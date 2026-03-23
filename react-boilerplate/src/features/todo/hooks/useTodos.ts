@@ -1,6 +1,14 @@
+import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { todoKeys } from '@/shared/apis/queryKeys';
-import { deleteTodo, getTodos, patchTodoComplete, postTodo } from '@/features/todo/apis/todoApi';
+import {
+  deleteTodo,
+  getTodos,
+  patchTodoComplete,
+  patchTodoImage,
+  postTodo,
+} from '@/features/todo/apis/todoApi';
+import { getPresignedUrl, uploadToPresignedUrl } from '@/shared/apis/fileApi';
 import type { CreateTodoRequest, TodoListParams } from '@/features/todo/types/todo';
 
 export const useTodos = (params: TodoListParams) =>
@@ -38,4 +46,19 @@ export const useDeleteTodo = (params: TodoListParams) => {
       queryClient.invalidateQueries({ queryKey: todoKeys.list(params).queryKey }),
     onError: (error) => console.error('[useDeleteTodo] 할 일 삭제 실패:', error),
   });
+};
+
+export const useUploadTodoImage = (params: TodoListParams) => {
+  const queryClient = useQueryClient();
+  const queryKey = todoKeys.list(params).queryKey;
+
+  return useCallback(
+    async (todoId: number, file: File) => {
+      const { data } = await getPresignedUrl(file.name, file.type);
+      await uploadToPresignedUrl(data.presignedUrl, file);
+      await patchTodoImage(todoId, data.objectUrl);
+      await queryClient.invalidateQueries({ queryKey });
+    },
+    [queryClient, queryKey],
+  );
 };

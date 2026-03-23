@@ -49,10 +49,12 @@
 ## Phase 3 — 기능 확장
 
 ### 7. 파일 업로드
-- [ ] BE: S3 Presigned URL 발급 API 추가 (`/api/files/presigned-url`)
-- [ ] BE: 업로드 완료 후 URL 저장 API
-- [ ] FE: 드래그앤드롭 파일 업로드 컴포넌트
-- [ ] FE: Todo에 이미지 첨부 기능
+> S3 대신 MinIO (Docker) 사용 — AWS SDK 코드 동일, endpoint만 로컬로 변경
+- [x] Infra: Docker Compose에 MinIO 컨테이너 추가
+- [x] BE: MinIO(S3 호환) Presigned URL 발급 API 추가 (`/api/files/presigned-url`)
+- [x] BE: 업로드 완료 후 URL 저장 API (`PATCH /api/todos/{id}/image`)
+- ~~[ ] FE: 드래그앤드롭 파일 업로드 컴포넌트~~ (생략)
+- [x] FE: Todo에 이미지 첨부 기능
 
 ### 8. 실시간 알림 (SSE)
 - [ ] BE: SSE 엔드포인트 추가 (`/api/notifications/subscribe`)
@@ -87,7 +89,7 @@
 | 4 | RBAC | 완료 |
 | 5 | 소셜 로그인 | 생략 |
 | 6 | Rate Limiting | 완료 |
-| 7 | 파일 업로드 | 대기 |
+| 7 | 파일 업로드 | 완료 |
 | 8 | 실시간 알림 (SSE) | 대기 |
 | 9 | 모니터링 | 대기 |
 | 10 | API 문서 개선 | 대기 |

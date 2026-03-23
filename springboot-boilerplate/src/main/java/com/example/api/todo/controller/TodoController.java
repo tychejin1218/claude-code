@@ -52,6 +52,15 @@ public class TodoController implements TodoControllerDocs {
   }
 
   @Override
+  @PatchMapping("/{id}/image")
+  public BaseResponse<TodoDto.TodoResponse> updateTodoImage(
+      Authentication authentication,
+      @PathVariable Long id,
+      @RequestBody @Valid TodoDto.UpdateImageRequest request) {
+    return BaseResponse.ok(todoService.updateTodoImage(authentication.getName(), id, request));
+  }
+
+  @Override
   @DeleteMapping("/{id}")
   public BaseResponse<Void> deleteTodo(
       Authentication authentication,

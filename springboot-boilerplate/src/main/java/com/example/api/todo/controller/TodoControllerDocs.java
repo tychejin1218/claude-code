@@ -121,6 +121,51 @@ public interface TodoControllerDocs {
   BaseResponse<TodoDto.TodoResponse> updateTodoComplete(Authentication authentication, Long id);
 
   /**
+   * 할 일 이미지 URL 업데이트
+   *
+   * @param authentication 인증 정보
+   * @param id             할 일 ID
+   * @param request        이미지 URL 업데이트 요청
+   * @return 업데이트된 할 일
+   */
+  @Operation(
+      summary = "할 일 이미지 업데이트",
+      description = "Presigned URL로 파일 업로드 완료 후 이미지 URL을 저장합니다."
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "업데이트 성공",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = TodoDto.TodoResponse.class),
+              examples = @ExampleObject(value = """
+                  {
+                    "statusCode": "200",
+                    "message": "성공",
+                    "data": {
+                      "id": 1,
+                      "title": "스프링 부트 공부하기",
+                      "completed": false,
+                      "imageUrl": "http://localhost:9000/boilerplate-bucket/uuid/image.png"
+                    }
+                  }
+                  """)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "할 일 없음",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ErrorResponse.class)
+          )
+      )
+  })
+  BaseResponse<TodoDto.TodoResponse> updateTodoImage(
+      Authentication authentication, Long id, TodoDto.UpdateImageRequest request);
+
+  /**
    * 할 일 삭제
    *
    * @param authentication 인증 정보

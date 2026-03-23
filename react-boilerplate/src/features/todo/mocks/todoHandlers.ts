@@ -8,6 +8,7 @@ let todos: Todo[] = [
   { id: 2, title: '리액트 공부하기', completed: false },
   { id: 1, title: '스프링 부트 공부하기', completed: true },
 ];
+
 let nextId = 3;
 
 export const todoHandlers = [
@@ -54,6 +55,19 @@ export const todoHandlers = [
     }
     todos = todos.map((t) => (t.id === id ? { ...t, completed: true } : t));
     return HttpResponse.json(ok({ ...todo, completed: true }));
+  }),
+
+  http.patch(`${BASE}/todos/:id/image`, async ({ params, request }) => {
+    const id = Number(params.id);
+    const { imageUrl } = (await request.json()) as { imageUrl: string };
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) {
+      return HttpResponse.json(err('804', '존재하지 않는 항목입니다.', 'PATCH', `/todos/${id}`), {
+        status: 404,
+      });
+    }
+    todos = todos.map((t) => (t.id === id ? { ...t, imageUrl } : t));
+    return HttpResponse.json(ok({ ...todo, imageUrl }));
   }),
 
   http.delete(`${BASE}/todos/:id`, ({ params }) => {

@@ -70,9 +70,24 @@ public class TodoService {
    */
   @Transactional
   public TodoDto.TodoResponse updateTodoComplete(String email, Long id) {
-    Todo todo = todoRepository.findByIdAndMemberEmail(id, email)
-        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
+    Todo todo = findTodo(id, email);
     todo.complete();
+    return TodoDto.TodoResponse.from(todo);
+  }
+
+  /**
+   * 할 일 이미지 URL 업데이트
+   *
+   * @param email   인증 회원 이메일
+   * @param id      할 일 ID
+   * @param request 이미지 URL 업데이트 요청
+   * @return 업데이트된 할 일
+   */
+  @Transactional
+  public TodoDto.TodoResponse updateTodoImage(
+      String email, Long id, TodoDto.UpdateImageRequest request) {
+    Todo todo = findTodo(id, email);
+    todo.updateImage(request.getImageUrl());
     return TodoDto.TodoResponse.from(todo);
   }
 
@@ -84,8 +99,19 @@ public class TodoService {
    */
   @Transactional
   public void deleteTodo(String email, Long id) {
-    Todo todo = todoRepository.findByIdAndMemberEmail(id, email)
-        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
+    Todo todo = findTodo(id, email);
     todo.softDelete();
+  }
+
+  /**
+   * 이메일과 ID로 할 일 조회 (소유권 검증 포함)
+   *
+   * @param id    할 일 ID
+   * @param email 인증 회원 이메일
+   * @return 할 일 엔티티
+   */
+  private Todo findTodo(Long id, String email) {
+    return todoRepository.findByIdAndMemberEmail(id, email)
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
   }
 }
