@@ -7,11 +7,13 @@ import com.example.api.domain.entity.Member;
 import com.example.api.domain.entity.Todo;
 import com.example.api.domain.repository.MemberRepository;
 import com.example.api.domain.repository.TodoRepository;
+import com.example.api.notification.event.TodoCompleteEvent;
 import com.example.api.todo.dto.TodoDto;
 import com.example.api.todo.repository.TodoQueryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class TodoService {
   private final TodoRepository todoRepository;
   private final TodoQueryRepository todoQueryRepository;
   private final MemberRepository memberRepository;
+  private final ApplicationEventPublisher eventPublisher;
 
   /**
    * 내 할 일 목록 조회 (페이지네이션 + 상태 필터)
@@ -72,6 +75,7 @@ public class TodoService {
   public TodoDto.TodoResponse updateTodoComplete(String email, Long id) {
     Todo todo = findTodo(id, email);
     todo.complete();
+    eventPublisher.publishEvent(new TodoCompleteEvent(email, todo.getId(), todo.getTitle()));
     return TodoDto.TodoResponse.from(todo);
   }
 

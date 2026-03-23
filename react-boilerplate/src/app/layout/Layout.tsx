@@ -1,12 +1,15 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { postLogout } from '@/features/auth/apis/authApi';
+import { useNotifications } from '@/features/notification/hooks/useNotifications';
 
 const Layout = () => {
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
   const refreshToken = useUserStore((state) => state.refreshToken);
   const navigate = useNavigate();
+
+  useNotifications();
 
   const onClickLogout = async () => {
     if (refreshToken) {
