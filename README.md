@@ -76,21 +76,19 @@ npm run dev
 
 ---
 
-## Claude Code 설정
+## 개발 방식 (Claude Code)
 
-각 프로젝트에 `.claude/` 자동화 설정이 포함되어 있습니다.
-
-| 종류 | 내용 |
-|------|------|
-| `CLAUDE.md` | 프로젝트 컨텍스트 · 코드 규칙 |
-| `.claude/agents/` | 자동 트리거 에이전트 (debugger, code-reviewer 등) |
-| `.claude/commands/` | 슬래시 커맨드 (`/crud`, `/review`, `/scaffold` 등) |
-| `.claude/skills/` | 자동 실행 스킬 (`/check`, `/test` 등) |
-| `.claude/docs/` | 아키텍처 · 컨벤션 참고 문서 |
-
-신규 프로젝트에 적용하려면:
+백엔드와 프론트엔드는 독립적인 터미널에서 각각 Claude Code를 실행합니다.
 
 ```bash
-cp -r springboot-boilerplate/.claude/ /path/to/new-project/
-cp springboot-boilerplate/CLAUDE.md /path/to/new-project/
+# 터미널 1 — 백엔드
+cd springboot-boilerplate
+claude
+
+# 터미널 2 — 프론트엔드
+cd react-boilerplate
+claude
 ```
+
+두 프로젝트는 REST API로 협조합니다. API 스펙 변경 시 백엔드에서 먼저 수정하고 프론트엔드에 반영하는 순서로 작업합니다.
+
