@@ -68,6 +68,7 @@ class AuthServiceMockTest {
         .email("test@example.com")
         .name("테스트")
         .password("encodedPassword")
+        .emailVerified(true)
         .build();
     given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
     given(passwordEncoder.matches("password123", "encodedPassword")).willReturn(true);
@@ -270,6 +271,7 @@ class AuthServiceMockTest {
 
     // then
     verify(memberRepository).save(any(Member.class));
+    verify(emailService).sendVerificationEmail(eq("new@example.com"), any());
   }
 
   @Test
