@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '@/app/stores/useUserStore';
+import { Link } from 'react-router-dom';
 import { postLogin } from '@/features/auth/apis/authApi';
-import type { MemberRole } from '@/features/auth/types/user';
+import useLoginSuccess from '@/features/auth/hooks/useLoginSuccess';
 import type { ErrorResponse } from '@/shared/types/api';
 import { API_STATUS_CODES } from '@/shared/constants/apiStatus';
 import useRetryCountdown from '@/shared/hooks/useRetryCountdown';
-import { parseEmailFromToken, parseRoleFromToken } from '@/shared/utils/token';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,10 +12,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { retrySeconds, startCountdown } = useRetryCountdown();
-
-  const setUser = useUserStore((state) => state.setUser);
-  const setAccessToken = useUserStore((state) => state.setAccessToken);
-  const navigate = useNavigate();
+  const onLoginSuccess = useLoginSuccess();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,13 +21,8 @@ const LoginPage = () => {
 
     try {
       const res = await postLogin({ email, password });
-      const { accessToken } = res.data;
-      const parsedEmail = parseEmailFromToken(accessToken) || email;
-      const role = parseRoleFromToken(accessToken) as MemberRole;
-
-      setUser({ userId: parsedEmail, name: parsedEmail, email: parsedEmail, role });
-      setAccessToken(accessToken);
-      void navigate('/todos');
+      const { accessToken, refreshToken } = res.data;
+      onLoginSuccess(accessToken, refreshToken);
     } catch (err) {
       const apiErr = err as ErrorResponse;
       if (apiErr?.statusCode === API_STATUS_CODES.RATE_LIMIT_EXCEEDED) {
