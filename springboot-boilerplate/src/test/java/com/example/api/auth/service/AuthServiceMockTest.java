@@ -51,6 +51,9 @@ class AuthServiceMockTest {
   @Mock
   private PasswordEncoder passwordEncoder;
 
+  @Mock
+  private EmailService emailService;
+
   @Test
   @Order(1)
   @DisplayName("로그인 - 성공")
@@ -68,7 +71,8 @@ class AuthServiceMockTest {
         .build();
     given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
     given(passwordEncoder.matches("password123", "encodedPassword")).willReturn(true);
-    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn("accessToken");
+    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn(
+        "accessToken");
     given(jwtTokenProvider.createRefreshToken("test@example.com")).willReturn("refreshToken");
 
     // when
@@ -170,7 +174,8 @@ class AuthServiceMockTest {
     given(redisComponent.getStringValue("APP:REFRESH_TOKEN:test@example.com"))
         .willReturn("validToken");
     given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
-    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn("newAccessToken");
+    given(jwtTokenProvider.createAccessToken("test@example.com", "ROLE_USER")).willReturn(
+        "newAccessToken");
     given(jwtTokenProvider.createRefreshToken("test@example.com")).willReturn("newRefreshToken");
 
     // when
@@ -242,14 +247,9 @@ class AuthServiceMockTest {
 
   @Test
   @Order(10)
-  @DisplayName("회원가입 - 성공")
+  @DisplayName("회원가입 - 성공 (인증 메일 발송)")
   void register_success() {
     // given
-    AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
-        .email("new@example.com")
-        .name("신규회원")
-        .password("password123")
-        .build();
     Member savedMember = Member.builder()
         .id(1L)
         .email("new@example.com")
@@ -259,15 +259,16 @@ class AuthServiceMockTest {
     given(memberRepository.existsByEmail("new@example.com")).willReturn(false);
     given(passwordEncoder.encode("password123")).willReturn("encodedPassword");
     given(memberRepository.save(any(Member.class))).willReturn(savedMember);
-    given(jwtTokenProvider.createAccessToken("new@example.com", "ROLE_USER")).willReturn("accessToken");
-    given(jwtTokenProvider.createRefreshToken("new@example.com")).willReturn("refreshToken");
+    AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
+        .email("new@example.com")
+        .name("신규회원")
+        .password("password123")
+        .build();
 
     // when
-    AuthDto.TokenResponse response = authService.register(request);
+    authService.register(request);
 
     // then
-    assertThat(response.getAccessToken()).isEqualTo("accessToken");
-    assertThat(response.getRefreshToken()).isEqualTo("refreshToken");
     verify(memberRepository).save(any(Member.class));
   }
 

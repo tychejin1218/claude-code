@@ -106,6 +106,22 @@ public class AuthDto {
   }
 
   /**
+   * 인증 메일 재발송 요청
+   */
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Schema(description = "인증 메일 재발송 요청")
+  public static class ResendVerificationRequest {
+
+    @Schema(description = "이메일", example = "user@example.com")
+    @NotBlank(message = "이메일을 입력해주세요.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
+    private String email;
+  }
+
+  /**
    * 임시 토큰 발급 요청 (local/dev/stg 전용)
    */
   @Getter

@@ -8,6 +8,7 @@ import com.example.api.common.type.RedisKeys;
 import com.example.api.config.jwt.JwtTokenProvider;
 import com.example.api.domain.entity.Member;
 import com.example.api.domain.repository.MemberRepository;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,22 +30,63 @@ public class AuthService {
   private final RedisComponent redisComponent;
   private final MemberRepository memberRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
   /**
-   * 회원가입 - 이메일 중복 확인 후 저장 및 JWT 발급
+   * 회원가입 - 이메일 중복 확인 후 저장 및 인증 메일 발송
+   *
+   * <p>가입 후 이메일 인증을 완료해야 로그인할 수 있습니다.
    *
    * @param request 회원가입 요청 (email, name, password)
-   * @return 토큰 응답
    */
   @Transactional
-  public AuthDto.TokenResponse register(AuthDto.RegisterRequest request) {
+  public void register(AuthDto.RegisterRequest request) {
     if (memberRepository.existsByEmail(request.getEmail())) {
       throw new ApiException(HttpStatus.CONFLICT, ApiStatus.DUPLICATED_REQUEST);
     }
     String encodedPassword = passwordEncoder.encode(request.getPassword());
-    Member member = memberRepository.save(
-        Member.of(request.getEmail(), request.getName(), encodedPassword));
+    memberRepository.save(Member.of(request.getEmail(), request.getName(), encodedPassword));
+    sendVerificationEmail(request.getEmail());
+  }
+
+  /**
+   * 이메일 인증 - 토큰 검증 후 회원 인증 완료 및 JWT 발급
+   *
+   * @param token 인증 토큰
+   * @return 토큰 응답
+   */
+  @Transactional
+  public AuthDto.TokenResponse verifyEmail(String token) {
+    String email = redisComponent.getStringValue(RedisKeys.EMAIL_VERIFY_TOKEN.getKey() + token);
+
+    if (StringUtils.isBlank(email)) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, ApiStatus.INVALID_REQUEST);
+    }
+
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED));
+
+    member.verify();
+    redisComponent.deleteKey(RedisKeys.EMAIL_VERIFY_TOKEN.getKey() + token);
+
     return issueTokenPair(member);
+  }
+
+  /**
+   * 인증 메일 재발송
+   *
+   * @param request 이메일 요청
+   */
+  @Transactional(readOnly = true)
+  public void resendVerification(AuthDto.ResendVerificationRequest request) {
+    Member member = memberRepository.findByEmail(request.getEmail())
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
+
+    if (member.isEmailVerified()) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, ApiStatus.INVALID_REQUEST);
+    }
+
+    sendVerificationEmail(request.getEmail());
   }
 
   /**
@@ -60,6 +102,10 @@ public class AuthService {
 
     if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
       throw new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED);
+    }
+
+    if (!member.isEmailVerified()) {
+      throw new ApiException(HttpStatus.FORBIDDEN, ApiStatus.FORBIDDEN_REQUEST);
     }
 
     return issueTokenPair(member);
@@ -112,6 +158,16 @@ public class AuthService {
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED));
 
     return issueTokenPair(member);
+  }
+
+  private void sendVerificationEmail(String email) {
+    String token = UUID.randomUUID().toString();
+    redisComponent.setStringValue(
+        RedisKeys.EMAIL_VERIFY_TOKEN.getKey() + token,
+        email,
+        RedisKeys.EMAIL_VERIFY_TOKEN.getTtl(),
+        TimeUnit.SECONDS);
+    emailService.sendVerificationEmail(email, token);
   }
 
   private AuthDto.TokenResponse issueTokenPair(Member member) {

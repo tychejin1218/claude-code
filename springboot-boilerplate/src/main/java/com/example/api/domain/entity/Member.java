@@ -52,6 +52,9 @@ public class Member extends BaseAudit {
   @Column(name = "role", nullable = false, length = 20)
   private MemberRole role = MemberRole.ROLE_USER;
 
+  @Column(name = "email_verified", nullable = false)
+  private boolean emailVerified;
+
   @Builder.Default
   @ToString.Exclude
   @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -71,5 +74,12 @@ public class Member extends BaseAudit {
         .name(name)
         .password(encodedPassword)
         .build();
+  }
+
+  /**
+   * 이메일 인증 완료 처리
+   */
+  public void verify() {
+    this.emailVerified = true;
   }
 }
