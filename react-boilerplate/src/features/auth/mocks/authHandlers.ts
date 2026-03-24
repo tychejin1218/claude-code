@@ -13,10 +13,7 @@ const mockUsers: Record<string, { name: string; password: string; role: string }
 };
 
 const makeFakeToken = (email: string, role: string = 'ROLE_USER') =>
-  btoa(JSON.stringify({ alg: 'HS256' })) +
-  '.' +
-  btoa(JSON.stringify({ sub: email, role })) +
-  '.signature';
+  btoa(JSON.stringify({ alg: 'HS256' })) + '.' + btoa(JSON.stringify({ sub: email, role })) + '.signature';
 
 export const authHandlers = [
   http.post(`${BASE}/auth/register`, async ({ request }) => {
@@ -27,18 +24,37 @@ export const authHandlers = [
     };
 
     if (registeredEmails.has(email)) {
-      return HttpResponse.json(
-        err('803', '이미 사용 중인 이메일입니다.', 'POST', '/auth/register'),
-        { status: 409 },
-      );
+      return HttpResponse.json(err('803', '이미 사용 중인 이메일입니다.', 'POST', '/auth/register'), { status: 409 });
     }
 
     registeredEmails.add(email);
     mockUsers[email] = { name, password, role: 'ROLE_USER' };
 
-    return HttpResponse.json(
-      ok({ accessToken: makeFakeToken(email, 'ROLE_USER'), refreshToken: makeFakeToken(email) }),
-    );
+    return HttpResponse.json(ok(null));
+  }),
+
+  http.get(`${BASE}/auth/verify-email`, ({ request }) => {
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token') ?? '';
+
+    // mock-token-{email} 형태로 이메일 추출
+    const email = token.startsWith('mock-token-') ? token.replace('mock-token-', '') : null;
+
+    if (!email || !registeredEmails.has(email)) {
+      return HttpResponse.json(err('801', '유효하지 않거나 만료된 인증 토큰입니다.', 'GET', '/auth/verify-email'), { status: 400 });
+    }
+
+    return HttpResponse.json(ok({ accessToken: makeFakeToken(email, 'ROLE_USER'), refreshToken: makeFakeToken(email) }));
+  }),
+
+  http.post(`${BASE}/auth/resend-verification`, async ({ request }) => {
+    const { email } = (await request.json()) as { email: string };
+
+    if (!registeredEmails.has(email)) {
+      return HttpResponse.json(err('804', '존재하지 않는 이메일입니다.', 'POST', '/auth/resend-verification'), { status: 404 });
+    }
+
+    return HttpResponse.json(ok(null));
   }),
 
   http.post(`${BASE}/auth/login`, async ({ request }) => {
@@ -49,15 +65,10 @@ export const authHandlers = [
 
     const user = mockUsers[email];
     if (!user || user.password !== password) {
-      return HttpResponse.json(
-        err('805', '이메일 또는 비밀번호가 올바르지 않습니다.', 'POST', '/auth/login'),
-        { status: 401 },
-      );
+      return HttpResponse.json(err('805', '이메일 또는 비밀번호가 올바르지 않습니다.', 'POST', '/auth/login'), { status: 401 });
     }
 
-    return HttpResponse.json(
-      ok({ accessToken: makeFakeToken(email, user.role), refreshToken: makeFakeToken(email) }),
-    );
+    return HttpResponse.json(ok({ accessToken: makeFakeToken(email, user.role), refreshToken: makeFakeToken(email) }));
   }),
 
   http.post(`${BASE}/auth/logout`, () => HttpResponse.json(ok(null))),

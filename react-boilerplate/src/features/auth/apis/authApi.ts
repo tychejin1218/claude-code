@@ -20,8 +20,13 @@ export interface RegisterRequest {
 export const postLogin = (data: LoginRequest): Promise<ApiResponse<TokenResponse>> =>
   api.post<ApiResponse<TokenResponse>>('/auth/login', data).then((res) => res.data);
 
-export const postRegister = (data: RegisterRequest): Promise<ApiResponse<TokenResponse>> =>
-  api.post<ApiResponse<TokenResponse>>('/auth/register', data).then((res) => res.data);
+export const postRegister = (data: RegisterRequest): Promise<ApiResponse<null>> => api.post<ApiResponse<null>>('/auth/register', data).then((res) => res.data);
+
+export const getVerifyEmail = (token: string): Promise<ApiResponse<TokenResponse>> =>
+  api.get<ApiResponse<TokenResponse>>(`/auth/verify-email?token=${token}`).then((res) => res.data);
+
+export const postResendVerification = (email: string): Promise<ApiResponse<null>> =>
+  api.post<ApiResponse<null>>('/auth/resend-verification', { email }).then((res) => res.data);
 
 export const postLogout = (refreshToken: string): Promise<ApiResponse<null>> =>
   api.post<ApiResponse<null>>('/auth/logout', { refreshToken }).then((res) => res.data);

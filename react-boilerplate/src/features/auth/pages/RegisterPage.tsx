@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '@/app/stores/useUserStore';
 import { postRegister } from '@/features/auth/apis/authApi';
-import type { MemberRole } from '@/features/auth/types/user';
 import type { ErrorResponse } from '@/shared/types/api';
 import { API_STATUS_CODES } from '@/shared/constants/apiStatus';
 import useRetryCountdown from '@/shared/hooks/useRetryCountdown';
-import { parseEmailFromToken, parseRoleFromToken } from '@/shared/utils/token';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -16,8 +13,6 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const { retrySeconds, startCountdown } = useRetryCountdown();
 
-  const setUser = useUserStore((state) => state.setUser);
-  const setAccessToken = useUserStore((state) => state.setAccessToken);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,14 +27,8 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      const res = await postRegister({ email, name, password });
-      const { accessToken } = res.data;
-      const parsedEmail = parseEmailFromToken(accessToken) || email;
-      const role = parseRoleFromToken(accessToken) as MemberRole;
-
-      setUser({ userId: parsedEmail, name, email: parsedEmail, role });
-      setAccessToken(accessToken);
-      void navigate('/todos');
+      await postRegister({ email, name, password });
+      void navigate(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err) {
       const apiErr = err as ErrorResponse;
       if (apiErr?.statusCode === API_STATUS_CODES.RATE_LIMIT_EXCEEDED) {

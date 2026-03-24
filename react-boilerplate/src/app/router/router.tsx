@@ -9,6 +9,7 @@ import SuspenseBoundary from '@/shared/components/common/SuspenseBoundary';
 // 페이지 컴포넌트 lazy loading
 const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'));
+const EmailVerifyPage = lazy(() => import('@/features/auth/pages/EmailVerifyPage'));
 const AuthErrorPage = lazy(() => import('@/features/auth/pages/AuthErrorPage'));
 const TodoPage = lazy(() => import('@/features/todo/pages/TodoPage'));
 const AdminPage = lazy(() => import('@/features/admin/pages/AdminPage'));
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: withSuspense(RegisterPage),
+  },
+  {
+    path: '/verify-email',
+    element: withSuspense(EmailVerifyPage),
   },
   // 인증 실패 페이지 (/error?message= 리다이렉트)
   {
