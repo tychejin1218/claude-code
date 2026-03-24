@@ -18,6 +18,17 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  mail:
+    host: localhost
+    port: 1025  # MailHog SMTP 포트
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+# 이메일 인증 설정
+mail:
+  from: noreply@boilerplate.local
+  verify-url: http://localhost:5173/verify-email
 
 # JWT 설정
 jwt:

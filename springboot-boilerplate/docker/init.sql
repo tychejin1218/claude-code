@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS member (
   email      VARCHAR(200) NOT NULL                COMMENT '이메일 (로그인 ID)',
   name       VARCHAR(100) NOT NULL                COMMENT '이름',
   password   VARCHAR(200) NOT NULL                COMMENT 'BCrypt 인코딩된 비밀번호',
-  role       VARCHAR(20)  NOT NULL DEFAULT 'ROLE_USER' COMMENT '역할 (ROLE_USER, ROLE_ADMIN)',
+  role           VARCHAR(20)  NOT NULL DEFAULT 'ROLE_USER' COMMENT '역할 (ROLE_USER, ROLE_ADMIN)',
+  email_verified TINYINT(1)   NOT NULL DEFAULT 0           COMMENT '이메일 인증 여부 (0: 미인증, 1: 인증)',
   created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP                   COMMENT '생성일시',
   updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
   deleted_at DATETIME              DEFAULT NULL                                COMMENT '삭제일시 (NULL: 정상, NOT NULL: 논리 삭제)',
@@ -56,11 +57,11 @@ CREATE TABLE IF NOT EXISTS todo (
 -- 비밀번호 원문: Test1234!
 -- =============================================================================
 
-INSERT INTO member (email, name, password, role) VALUES
-  ('user1@example.com', '홍길동', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER'),
-  ('user2@example.com', '김철수', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER'),
-  ('admin@example.com', '관리자', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_ADMIN'),
-  ('deleted@example.com', '탈퇴회원', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER');
+INSERT INTO member (email, name, password, role, email_verified) VALUES
+  ('user1@example.com', '홍길동', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER', 1),
+  ('user2@example.com', '김철수', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER', 1),
+  ('admin@example.com', '관리자', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_ADMIN', 1),
+  ('deleted@example.com', '탈퇴회원', '$2a$10$zQV5g9qExngCv2qE9/c5feupavK2VKb.76uITB1LV4RPhG62zoFbu', 'ROLE_USER', 1);
 
 -- 논리 삭제된 회원 처리
 UPDATE member SET deleted_at = '2026-01-01 00:00:00' WHERE email = 'deleted@example.com';

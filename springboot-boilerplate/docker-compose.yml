@@ -40,6 +40,13 @@ services:
       timeout: 5s
       retries: 10
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: springboot-boilerplate-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # 웹 UI (http://localhost:8025)
+
 volumes:
   mysql_data:
   redis_data:
