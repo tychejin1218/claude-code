@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { ok } from '@/mocks/response';
+import { env } from '@/app/config/env';
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:9091/api';
+const BASE = env.VITE_API_BASE_URL;
 
 export const fileHandlers = [
   http.get(`${BASE}/files/presigned-url`, () => {

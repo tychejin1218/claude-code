@@ -30,3 +30,14 @@ export const postResendVerification = (email: string): Promise<ApiResponse<null>
 
 export const postLogout = (refreshToken: string): Promise<ApiResponse<null>> =>
   api.post<ApiResponse<null>>('/auth/logout', { refreshToken }).then((res) => res.data);
+
+export interface PasswordResetRequest {
+  token: string;
+  newPassword: string;
+}
+
+export const postPasswordResetRequest = (email: string): Promise<ApiResponse<null>> =>
+  api.post<ApiResponse<null>>('/auth/password/reset-request', { email }).then((res) => res.data);
+
+export const postPasswordReset = (data: PasswordResetRequest): Promise<ApiResponse<null>> =>
+  api.post<ApiResponse<null>>('/auth/password/reset', data).then((res) => res.data);

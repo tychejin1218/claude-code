@@ -11,6 +11,8 @@ const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'));
 const EmailVerifyPage = lazy(() => import('@/features/auth/pages/EmailVerifyPage'));
 const AuthErrorPage = lazy(() => import('@/features/auth/pages/AuthErrorPage'));
+const PasswordResetRequestPage = lazy(() => import('@/features/auth/pages/PasswordResetRequestPage'));
+const PasswordResetPage = lazy(() => import('@/features/auth/pages/PasswordResetPage'));
 const TodoPage = lazy(() => import('@/features/todo/pages/TodoPage'));
 const AdminPage = lazy(() => import('@/features/admin/pages/AdminPage'));
 const HomePage = lazy(() => import('@/app/pages/HomePage'));
@@ -37,6 +39,14 @@ const router = createBrowserRouter([
   {
     path: '/verify-email',
     element: withSuspense(EmailVerifyPage),
+  },
+  {
+    path: '/password/reset-request',
+    element: withSuspense(PasswordResetRequestPage),
+  },
+  {
+    path: '/password/reset',
+    element: withSuspense(PasswordResetPage),
   },
   // 인증 실패 페이지 (/error?message= 리다이렉트)
   {

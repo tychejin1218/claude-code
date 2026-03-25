@@ -1,4 +1,4 @@
-import '@/app/config/env.ts';
+import { env } from '@/app/config/env';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
@@ -7,7 +7,7 @@ import QueryProvider from './app/providers/QueryProvider.tsx';
 import ErrorBoundary from './shared/components/common/ErrorBoundary';
 
 const enableMocking = async () => {
-  if (import.meta.env.VITE_ENABLE_MSW === 'true') {
+  if (env.VITE_ENABLE_MSW) {
     const { worker } = await import('./mocks/browser.ts');
     return worker.start({ onUnhandledRequest: 'bypass' });
   }

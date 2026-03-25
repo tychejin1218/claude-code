@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
+import { env } from '@/app/config/env';
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:9091/api';
+const BASE = env.VITE_API_BASE_URL;
 
 const encoder = new TextEncoder();
 

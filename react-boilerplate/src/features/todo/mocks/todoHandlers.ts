@@ -1,8 +1,9 @@
 import { http, HttpResponse } from 'msw';
 import { ok, err } from '@/mocks/response';
 import type { Todo, PageResponse } from '@/features/todo/types/todo';
+import { env } from '@/app/config/env';
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:9091/api';
+const BASE = env.VITE_API_BASE_URL;
 
 let todos: Todo[] = [
   { id: 2, title: '리액트 공부하기', completed: false },

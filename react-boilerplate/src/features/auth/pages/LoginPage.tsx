@@ -81,6 +81,11 @@ const LoginPage = () => {
             회원가입
           </Link>
         </p>
+        <p className="mt-2 text-center text-sm text-gray-500">
+          <Link to="/password/reset-request" className="text-blue-600 hover:underline">
+            비밀번호를 잊으셨나요?
+          </Link>
+        </p>
       </div>
     </div>
   );

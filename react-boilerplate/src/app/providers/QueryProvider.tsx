@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { ReactNode } from 'react';
+import { env } from '@/app/config/env';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,7 +16,7 @@ const QueryProvider = ({ children }: { children: ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {import.meta.env.VITE_APP_ENV !== 'prd' && <ReactQueryDevtools initialIsOpen={false} />}
+      {env.VITE_APP_ENV !== 'prd' && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 };
