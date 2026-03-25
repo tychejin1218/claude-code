@@ -10,6 +10,7 @@ import com.example.api.sample.repository.SampleRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class SampleService {
    * @param request 조회 조건
    * @return 회원 목록
    */
+  @Cacheable(value = "sample:memberList", key = "#request.name + ':' + #request.email")
   @Transactional(readOnly = true)
   public List<SampleDto.MemberResponse> getMemberList(SampleDto.MemberListRequest request) {
     return sampleRepository.selectMemberList(request);
@@ -45,6 +47,7 @@ public class SampleService {
    * @return 회원 정보
    * @throws ApiException 회원 미존재 시 (NOT_FOUND)
    */
+  @Cacheable(value = "sample:member", key = "#request.id")
   @Transactional(readOnly = true)
   public SampleDto.MemberResponse getMember(SampleDto.MemberRequest request) {
     SampleDto.MemberResponse response = sampleRepository.selectMember(request);

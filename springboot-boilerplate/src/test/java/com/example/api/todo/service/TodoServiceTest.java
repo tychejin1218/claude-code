@@ -15,17 +15,19 @@ import com.example.api.domain.repository.MemberRepository;
 import com.example.api.domain.repository.TodoRepository;
 import com.example.api.todo.dto.TodoDto;
 import com.example.api.todo.repository.TodoQueryRepository;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * 할 일 서비스 Mock 단위 테스트
@@ -35,7 +37,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("할 일 서비스 Mock 테스트")
 class TodoServiceTest {
 
-  @InjectMocks
   private TodoService todoService;
 
   @Mock
@@ -46,6 +47,16 @@ class TodoServiceTest {
 
   @Mock
   private MemberRepository memberRepository;
+
+  @Mock
+  private ApplicationEventPublisher eventPublisher;
+
+  @BeforeEach
+  void setUp() {
+    todoService = new TodoService(
+        todoRepository, todoQueryRepository, memberRepository,
+        eventPublisher, new SimpleMeterRegistry());
+  }
 
   @Test
   @Order(1)

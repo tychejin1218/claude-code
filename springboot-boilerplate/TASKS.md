@@ -56,19 +56,19 @@
 - [x] 이메일 인증 확인 API (`GET /auth/verify-email?token=`)
 
 ### 10. 앱 컨테이너화
-- [ ] `Dockerfile` 작성 (멀티 스테이지 빌드)
-- [ ] `docker-compose.yml`에 앱 서비스 추가
+- [x] `Dockerfile` 작성 (멀티 스테이지 빌드)
+- [x] `docker-compose.yml`에 앱 서비스 추가
 
 ### 11. 모니터링 (Actuator + Prometheus + Grafana)
-- [ ] Spring Actuator 엔드포인트 활성화 (`/actuator/health`, `/actuator/metrics`)
-- [ ] Micrometer 커스텀 메트릭 추가 (Todo 생성 수 등)
-- [ ] Docker Compose에 Prometheus + Grafana 추가
+- [x] Spring Actuator 엔드포인트 활성화 (`/actuator/health`, `/actuator/metrics`)
+- [x] Micrometer 커스텀 메트릭 추가 (Todo 생성 수 등)
+- [x] Docker Compose에 Prometheus + Grafana 추가
 
 ### 12. 캐시 전략 (Redis `@Cacheable`)
-- [ ] `@EnableCaching` 설정 및 `CacheManager` 빈 등록
-- [ ] 자주 조회되는 데이터에 `@Cacheable` 적용
-- [ ] 변경 시 `@CacheEvict`로 캐시 무효화
+- [x] `@EnableCaching` 설정 및 `CacheManager` 빈 등록
+- [x] 자주 조회되는 데이터에 `@Cacheable` 적용
+- [x] 변경 시 `@CacheEvict`로 캐시 무효화
 
 ### 13. 비밀번호 재설정
-- [ ] 재설정 링크 발송 API (`POST /auth/password/reset-request`)
-- [ ] 새 비밀번호 설정 API (`POST /auth/password/reset`)
+- [x] 재설정 링크 발송 API (`POST /auth/password/reset-request`)
+- [x] 새 비밀번호 설정 API (`POST /auth/password/reset`)

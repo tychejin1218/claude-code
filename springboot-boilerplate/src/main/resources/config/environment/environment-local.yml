@@ -29,6 +29,7 @@ spring:
 mail:
   from: noreply@boilerplate.local
   verify-url: http://localhost:5173/verify-email
+  password-reset-url: http://localhost:5173/reset-password
 
 # JWT 설정
 jwt:
@@ -56,6 +57,19 @@ springdoc:
   override-with-generic-response: false
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
+
+# Actuator 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 # AWS 설정 (로컬: MinIO Docker 사용)
 aws:

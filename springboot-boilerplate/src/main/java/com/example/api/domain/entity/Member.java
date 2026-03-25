@@ -82,4 +82,13 @@ public class Member extends BaseAudit {
   public void verify() {
     this.emailVerified = true;
   }
+
+  /**
+   * 비밀번호 변경
+   *
+   * @param encodedPassword BCrypt 인코딩된 새 비밀번호
+   */
+  public void changePassword(String encodedPassword) {
+    this.password = encodedPassword;
+  }
 }

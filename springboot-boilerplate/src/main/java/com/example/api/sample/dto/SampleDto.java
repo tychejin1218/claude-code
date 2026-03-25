@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -79,7 +78,6 @@ public class SampleDto {
    * 회원 조회 응답 DTO
    */
   @Getter
-  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor

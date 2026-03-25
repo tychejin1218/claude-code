@@ -65,4 +65,20 @@ public class AuthController implements AuthControllerDocs {
       @RequestBody @Valid AuthDto.RefreshRequest request) {
     return BaseResponse.ok(authService.refresh(request));
   }
+
+  @Override
+  @PostMapping("/password/reset-request")
+  public BaseResponse<Void> requestPasswordReset(
+      @RequestBody @Valid AuthDto.PasswordResetRequest request) {
+    authService.requestPasswordReset(request);
+    return BaseResponse.ok();
+  }
+
+  @Override
+  @PostMapping("/password/reset")
+  public BaseResponse<Void> resetPassword(
+      @RequestBody @Valid AuthDto.PasswordReset request) {
+    authService.resetPassword(request);
+    return BaseResponse.ok();
+  }
 }

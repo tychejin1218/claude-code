@@ -230,4 +230,64 @@ public interface AuthControllerDocs {
       )
   })
   BaseResponse<AuthDto.TokenResponse> refresh(AuthDto.RefreshRequest request);
+
+  /**
+   * 비밀번호 재설정 요청 (이메일 발송)
+   *
+   * @param request 이메일 요청
+   * @return 성공 응답
+   */
+  @Operation(summary = "비밀번호 재설정 요청",
+      description = "이메일로 비밀번호 재설정 링크를 발송합니다. 보안상 미등록 이메일에도 동일 응답을 반환합니다.")
+  @ApiResponse(
+      responseCode = "200",
+      description = "요청 처리 완료",
+      content = @Content(
+          mediaType = MediaType.APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = BaseResponse.class),
+          examples = @ExampleObject(value = """
+              {
+                "statusCode": "200",
+                "message": "성공",
+                "data": null
+              }
+              """)
+      )
+  )
+  BaseResponse<Void> requestPasswordReset(AuthDto.PasswordResetRequest request);
+
+  /**
+   * 비밀번호 재설정
+   *
+   * @param request 토큰 및 새 비밀번호
+   * @return 성공 응답
+   */
+  @Operation(summary = "비밀번호 재설정",
+      description = "재설정 토큰을 검증하고 새 비밀번호를 설정합니다.")
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "비밀번호 재설정 성공",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = BaseResponse.class),
+              examples = @ExampleObject(value = """
+                  {
+                    "statusCode": "200",
+                    "message": "성공",
+                    "data": null
+                  }
+                  """)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "유효하지 않거나 만료된 토큰",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ErrorResponse.class)
+          )
+      )
+  })
+  BaseResponse<Void> resetPassword(AuthDto.PasswordReset request);
 }

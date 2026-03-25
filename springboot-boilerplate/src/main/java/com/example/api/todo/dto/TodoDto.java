@@ -41,6 +41,7 @@ public class TodoDto {
    * 할 일 생성 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
@@ -57,6 +58,7 @@ public class TodoDto {
    * 이미지 URL 업데이트 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor

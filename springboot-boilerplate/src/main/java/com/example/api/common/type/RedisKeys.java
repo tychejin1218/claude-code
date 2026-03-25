@@ -13,7 +13,8 @@ public enum RedisKeys {
   SAMPLE("APP:SAMPLE:", 3600),
   REFRESH_TOKEN("APP:REFRESH_TOKEN:", 604_800),
   RATE_LIMIT("APP:RATE_LIMIT:", 60),
-  EMAIL_VERIFY_TOKEN("APP:EMAIL_VERIFY:", 86_400);  // 24시간
+  EMAIL_VERIFY_TOKEN("APP:EMAIL_VERIFY:", 86_400),  // 24시간
+  PASSWORD_RESET_TOKEN("APP:PASSWORD_RESET:", 1_800);  // 30분
 
   private final String key;
   private final long ttl;

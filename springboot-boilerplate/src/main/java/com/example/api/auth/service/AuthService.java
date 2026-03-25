@@ -116,6 +116,7 @@ public class AuthService {
    *
    * @param request 리프레시 토큰 요청
    */
+  @Transactional
   public void logout(AuthDto.RefreshRequest request) {
     String refreshToken = request.getRefreshToken();
 
@@ -133,6 +134,7 @@ public class AuthService {
    * @param request 토큰 재발급 요청
    * @return 새 토큰 응답
    */
+  @Transactional
   public AuthDto.TokenResponse refresh(AuthDto.RefreshRequest request) {
     String refreshToken = request.getRefreshToken();
 
@@ -158,6 +160,48 @@ public class AuthService {
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, ApiStatus.UNAUTHORIZED));
 
     return issueTokenPair(member);
+  }
+
+  /**
+   * 비밀번호 재설정 요청 - 이메일로 재설정 링크 발송
+   *
+   * <p>회원이 존재하지 않아도 보안상 동일 응답 반환
+   *
+   * @param request 비밀번호 재설정 요청 (email)
+   */
+  @Transactional(readOnly = true)
+  public void requestPasswordReset(AuthDto.PasswordResetRequest request) {
+    memberRepository.findByEmail(request.getEmail()).ifPresent(member -> {
+      String token = UUID.randomUUID().toString();
+      redisComponent.setStringValue(
+          RedisKeys.PASSWORD_RESET_TOKEN.getKey() + token,
+          member.getEmail(),
+          RedisKeys.PASSWORD_RESET_TOKEN.getTtl(),
+          TimeUnit.SECONDS);
+      emailService.sendPasswordResetEmail(member.getEmail(), token);
+    });
+  }
+
+  /**
+   * 비밀번호 재설정 - 토큰 검증 후 비밀번호 변경
+   *
+   * @param request 비밀번호 재설정 (token, newPassword)
+   * @throws ApiException 유효하지 않은 토큰
+   */
+  @Transactional
+  public void resetPassword(AuthDto.PasswordReset request) {
+    String email = redisComponent.getStringValue(
+        RedisKeys.PASSWORD_RESET_TOKEN.getKey() + request.getToken());
+
+    if (StringUtils.isBlank(email)) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, ApiStatus.INVALID_REQUEST);
+    }
+
+    Member member = memberRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, ApiStatus.NOT_FOUND));
+
+    member.changePassword(passwordEncoder.encode(request.getNewPassword()));
+    redisComponent.deleteKey(RedisKeys.PASSWORD_RESET_TOKEN.getKey() + request.getToken());
   }
 
   private void sendVerificationEmail(String email) {

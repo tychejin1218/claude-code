@@ -40,7 +40,10 @@ public class SecurityConfig {
       "/auth/login",
       "/auth/logout",
       "/auth/token/refresh",
-      "/auth/token/temp"
+      "/auth/token/temp",
+      "/auth/password/reset-request",
+      "/auth/password/reset",
+      "/actuator/**"
   );
 
   @Value("${cors.allowed-origins}")

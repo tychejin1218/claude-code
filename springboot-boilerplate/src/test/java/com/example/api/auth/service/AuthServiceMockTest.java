@@ -290,4 +290,108 @@ class AuthServiceMockTest {
     assertThatThrownBy(() -> authService.register(request))
         .isInstanceOf(ApiException.class);
   }
+
+  @Test
+  @Order(12)
+  @DisplayName("비밀번호 재설정 요청 - 성공 (회원 존재)")
+  void requestPasswordReset_success() {
+    // given
+    AuthDto.PasswordResetRequest request = AuthDto.PasswordResetRequest.builder()
+        .email("test@example.com")
+        .build();
+    Member member = Member.builder()
+        .id(1L)
+        .email("test@example.com")
+        .name("테스트")
+        .password("encodedPassword")
+        .build();
+    given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
+
+    // when
+    authService.requestPasswordReset(request);
+
+    // then
+    verify(redisComponent).setStringValue(any(), eq("test@example.com"), anyLong(),
+        any(TimeUnit.class));
+    verify(emailService).sendPasswordResetEmail(eq("test@example.com"), any());
+  }
+
+  @Test
+  @Order(13)
+  @DisplayName("비밀번호 재설정 요청 - 미등록 이메일 (정상 응답, 메일 미발송)")
+  void requestPasswordReset_memberNotFound() {
+    // given
+    AuthDto.PasswordResetRequest request = AuthDto.PasswordResetRequest.builder()
+        .email("notfound@example.com")
+        .build();
+    given(memberRepository.findByEmail("notfound@example.com")).willReturn(Optional.empty());
+
+    // when
+    authService.requestPasswordReset(request);
+
+    // then
+    verify(emailService, never()).sendPasswordResetEmail(any(), any());
+  }
+
+  @Test
+  @Order(14)
+  @DisplayName("비밀번호 재설정 - 성공")
+  void resetPassword_success() {
+    // given
+    Member member = Member.builder()
+        .id(1L)
+        .email("test@example.com")
+        .name("테스트")
+        .password("oldEncodedPassword")
+        .build();
+    given(redisComponent.getStringValue("APP:PASSWORD_RESET:validToken"))
+        .willReturn("test@example.com");
+    given(memberRepository.findByEmail("test@example.com")).willReturn(Optional.of(member));
+    given(passwordEncoder.encode("newPassword123")).willReturn("newEncodedPassword");
+    AuthDto.PasswordReset request = AuthDto.PasswordReset.builder()
+        .token("validToken")
+        .newPassword("newPassword123")
+        .build();
+
+    // when
+    authService.resetPassword(request);
+
+    // then
+    verify(passwordEncoder).encode("newPassword123");
+    verify(redisComponent).deleteKey("APP:PASSWORD_RESET:validToken");
+  }
+
+  @Test
+  @Order(15)
+  @DisplayName("비밀번호 재설정 - 유효하지 않은 토큰")
+  void resetPassword_invalidToken() {
+    // given
+    AuthDto.PasswordReset request = AuthDto.PasswordReset.builder()
+        .token("invalidToken")
+        .newPassword("newPassword123")
+        .build();
+    given(redisComponent.getStringValue("APP:PASSWORD_RESET:invalidToken")).willReturn(null);
+
+    // when & then
+    assertThatThrownBy(() -> authService.resetPassword(request))
+        .isInstanceOf(ApiException.class);
+  }
+
+  @Test
+  @Order(16)
+  @DisplayName("비밀번호 재설정 - 회원 미존재")
+  void resetPassword_memberNotFound() {
+    // given
+    AuthDto.PasswordReset request = AuthDto.PasswordReset.builder()
+        .token("validToken")
+        .newPassword("newPassword123")
+        .build();
+    given(redisComponent.getStringValue("APP:PASSWORD_RESET:validToken"))
+        .willReturn("notfound@example.com");
+    given(memberRepository.findByEmail("notfound@example.com")).willReturn(Optional.empty());
+
+    // when & then
+    assertThatThrownBy(() -> authService.resetPassword(request))
+        .isInstanceOf(ApiException.class);
+  }
 }

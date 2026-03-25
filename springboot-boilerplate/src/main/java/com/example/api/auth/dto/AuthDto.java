@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 인증 DTO
@@ -49,6 +50,7 @@ public class AuthDto {
    * 로그인 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
@@ -69,6 +71,7 @@ public class AuthDto {
    * 회원가입 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
@@ -94,6 +97,7 @@ public class AuthDto {
    * 토큰 재발급 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
@@ -109,6 +113,7 @@ public class AuthDto {
    * 인증 메일 재발송 요청
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
@@ -122,9 +127,48 @@ public class AuthDto {
   }
 
   /**
+   * 비밀번호 재설정 요청 (이메일 발송)
+   */
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Schema(description = "비밀번호 재설정 링크 요청")
+  public static class PasswordResetRequest {
+
+    @Schema(description = "이메일", example = "user@example.com")
+    @NotBlank(message = "이메일을 입력해주세요.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
+    private String email;
+  }
+
+  /**
+   * 비밀번호 재설정 (새 비밀번호 설정)
+   */
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Schema(description = "비밀번호 재설정 요청")
+  public static class PasswordReset {
+
+    @Schema(description = "재설정 토큰")
+    @NotBlank(message = "토큰을 입력해주세요.")
+    private String token;
+
+    @Schema(description = "새 비밀번호 (8자 이상)")
+    @NotBlank(message = "새 비밀번호를 입력해주세요.")
+    @Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
+    private String newPassword;
+  }
+
+  /**
    * 임시 토큰 발급 요청 (local/dev/stg 전용)
    */
   @Getter
+  @Setter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
