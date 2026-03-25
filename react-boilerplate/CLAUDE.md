@@ -170,24 +170,28 @@ export const todoHandlers = [
 
 ## Claude Code 자동화 도구
 
-### 커맨드 (`/xxx`) — 명시적 호출
+상세 아키텍처 규칙은 @.claude/rules/architecture-rules.md 참고
+테스트 규칙은 @.claude/rules/testing-rules.md 참고
 
-| 커맨드 | 에이전트 | 역할 |
-|--------|---------|------|
-| `/scaffold <feature명>` | `feature-scaffolder` | 새 feature 디렉토리 구조 일괄 생성 |
-| `/review <파일명>` | `code-reviewer` | 성능·접근성·hooks 규칙·타입 안전성 리뷰 |
-| `/explain <파일명>` | — | 컴포넌트·훅·유틸 코드 흐름 설명 |
+### Skills (`/xxx`) — 명시적 호출
 
-### 스킬 (`/xxx`) — 명시적 호출
+| 스킬 | 역할 | 사용법 |
+|------|------|------|
+| `/domain-scaffolder <feature명>` | 새 feature 디렉토리 구조 일괄 생성 | `/domain-scaffolder product` |
+| `/vitest-gen <파일경로>` | Vitest 단위 테스트 자동 생성 | `/vitest-gen src/features/auth/hooks/useLogin.ts` |
+| `/e2e-gen <페이지명>` | Playwright E2E 테스트 자동 생성 | `/e2e-gen LoginPage` |
+| `/check [파일명]` | ESLint + Prettier 포맷 체크 및 자동 수정 | `/check` |
 
-| 스킬 | 역할 |
-|------|------|
-| `/check [파일명]` | ESLint + Prettier 포맷 체크 및 자동 수정 |
-
-### 에이전트 — 대화 맥락에 따라 자동 호출
+### Agents — 대화 맥락에 따라 자동 호출
 
 | 에이전트 | 자동 호출 트리거 |
 |---------|---------------|
 | `debugger` | 에러 메시지·스택 트레이스·콘솔 에러 공유 시 |
-| `code-reviewer` | 코드 리뷰 요청 시 |
+| `code-reviewer` | 코드 변경 후 리뷰 요청 시 |
 | `feature-scaffolder` | 새 기능·페이지·feature 추가 요청 시 |
+
+### Hooks — 파일 저장 시 자동 실행
+
+파일 편집/생성 후 자동으로 실행됩니다 (설정: `.claude/settings.json`):
+1. **Prettier** — 코드 포매팅 자동 적용
+2. **ESLint --fix** — 자동 수정 가능한 린트 에러 해결

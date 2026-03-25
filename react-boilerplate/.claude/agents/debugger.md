@@ -1,6 +1,7 @@
 ---
 name: debugger
-description: React/Vite/TypeScript 애플리케이션의 오류, 빌드 실패, 예상치 못한 동작의 근본 원인을 분석하고 최소한의 수정으로 해결합니다. 에러 메시지나 스택 트레이스가 공유되면 자동으로 호출됩니다.
+description: React/Vite/TypeScript 애플리케이션의 오류, 빌드 실패, 예상치 못한 동작의 근본 원인을 분석하고 최소한의 수정으로 해결합니다. 에러 메시지나 스택 트레이스가 공유되면 자동으로 호출됩니다 (use proactively).
+tools: Read, Grep, Glob, Bash, Edit, Write
 model: sonnet
 ---
 

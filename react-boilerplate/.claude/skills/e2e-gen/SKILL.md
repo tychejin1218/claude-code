@@ -3,7 +3,7 @@ name: e2e-gen
 description: Playwright E2E 테스트 코드 자동 생성
 argument-hint: "<page-name>"
 disable-model-invocation: true
-allowed-tools: Read, Write, Bash, Glob, Grep, Edit, Task, AskUserQuestion
+allowed-tools: Read, Write, Bash, Glob, Grep, Edit, Agent, AskUserQuestion
 ---
 
 # /e2e-gen — Playwright E2E 테스트 코드 자동 생성 스킬

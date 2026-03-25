@@ -12,7 +12,7 @@ disable-model-invocation: true
 ## 사전 준비
 
 시작 전 반드시 아래를 읽으세요:
-- `.claude/docs/testing.md` — 테스트 전체 가이드
+- `.claude/rules/testing.md` — 테스트 전체 가이드
 - `src/test/java/{basePackage}/sample/` — 기존 테스트 패턴 참조
 - 대상 클래스 소스 코드 전체 + 직접 의존하는 클래스 읽기
 

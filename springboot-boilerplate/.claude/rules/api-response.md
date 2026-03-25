@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/main/java/**/controller/**/*.java"
+  - "src/main/java/**/service/**/*.java"
+---
 # API 응답 & 예외 처리
 
 ## 서버 설정

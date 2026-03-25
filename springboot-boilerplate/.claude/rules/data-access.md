@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/main/java/**/repository/**/*.java"
+  - "src/main/java/**/mapper/**/*.java"
+  - "src/main/resources/mapper/**/*.xml"
+---
 # 데이터 접근 계층
 
 ## 3중 쿼리 메커니즘

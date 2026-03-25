@@ -1,3 +1,7 @@
+---
+paths:
+  - "src/main/java/**/*.java"
+---
 # 네이밍 컨벤션
 
 ## 파일명 Suffix

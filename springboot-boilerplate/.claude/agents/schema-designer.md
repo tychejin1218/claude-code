@@ -17,8 +17,8 @@ model: sonnet
 ## 사전 준비
 
 작업 전 반드시 아래를 읽으세요:
-- `.claude/docs/data-access.md` — Entity 작성 규칙
-- `.claude/docs/naming-conventions.md` — 네이밍 컨벤션
+- `.claude/rules/data-access.md` — Entity 작성 규칙
+- `.claude/rules/naming-conventions.md` — 네이밍 컨벤션
 - `src/main/java/com/example/api/domain/entity/` — 기존 Entity 참조
 - `src/main/java/com/example/api/domain/repository/` — 기존 JPA Repository 참조
 

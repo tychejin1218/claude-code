@@ -95,14 +95,14 @@ src/main/java/com/example/api/
 - `from(entity)` — Response DTO 생성 (Entity → DTO 변환)
 - 테스트 코드는 `.builder()` 사용 허용
 
-상세: [naming-conventions.md](.claude/docs/naming-conventions.md)
+상세: [naming-conventions.md](.claude/rules/naming-conventions.md)
 
 ### 네이밍 규칙
 
 - Controller/Service: `getXXX`(단건), `getXXXList`(목록), `insertXXX`, `updateXXX`, `deleteXXX`
 - Repository/Mapper: `selectXXX`(단건), `selectXXXList`(목록), `selectXXXCount`, `insertXXX`, `updateXXX`
 
-상세: [naming-conventions.md](.claude/docs/naming-conventions.md)
+상세: [naming-conventions.md](.claude/rules/naming-conventions.md)
 
 ## Claude Code 자동화 도구
 
@@ -140,9 +140,10 @@ JetBrains MCP 도구 호출 시 **항상** `projectPath: /path/to/your/project` 
 
 ### 상세 문서
 
-`.claude/docs/` 디렉토리 참조:
-- [패키지 구성 가이드](.claude/docs/package.md) - 새 패키지 추가 시 필독
-- [아키텍처](.claude/docs/architecture.md) | [네이밍](.claude/docs/naming-conventions.md)
-- [API 응답 & 예외](.claude/docs/api-response.md) | [데이터 접근](.claude/docs/data-access.md)
-- [설정 & 인프라](.claude/docs/configuration.md) | [OpenAPI](.claude/docs/openapi.md) | [테스트](.claude/docs/testing.md) | [주석](.claude/docs/commenting.md)
-- [DB 네이밍 컨벤션](.claude/docs/db-conventions.md) - 테이블·컬럼·인덱스 네이밍 및 DDL 작성 규칙
+`.claude/rules/` 디렉토리 참조:
+- [패키지 구성 가이드](.claude/rules/package.md) - 새 패키지 추가 시 필독
+- [아키텍처](.claude/rules/architecture.md) | [네이밍](.claude/rules/naming-conventions.md)
+- [API 응답 & 예외](.claude/rules/api-response.md) | [데이터 접근](.claude/rules/data-access.md)
+- [설정 & 인프라](.claude/rules/configuration.md) | [OpenAPI](.claude/rules/openapi.md) | [테스트](.claude/rules/testing.md) | [주석](.claude/rules/commenting.md)
+- [DB 네이밍 컨벤션](.claude/rules/db-conventions.md) - 테이블·컬럼·인덱스 네이밍 및 DDL 작성 규칙
+- [날짜/시간 처리](.claude/rules/datetime.md) - UTC/KST 변환, ZonedDateTime 패턴

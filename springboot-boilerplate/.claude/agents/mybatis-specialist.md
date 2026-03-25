@@ -17,7 +17,7 @@ model: sonnet
 ## 사전 준비
 
 작업 전 반드시 아래를 읽으세요:
-- `.claude/docs/data-access.md` — MyBatis 사용 패턴
+- `.claude/rules/data-access.md` — MyBatis 사용 패턴
 - 같은 패키지의 기존 Mapper 인터페이스 (있을 경우)
 - 같은 패키지의 기존 Mapper XML (있을 경우)
 - 대상 DTO 파일 (파라미터/반환 타입 파악)

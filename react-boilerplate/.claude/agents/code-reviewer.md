@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: 코드 리뷰를 수행합니다. 성능, 접근성, hooks 규칙, 타입 안전성, 프로젝트 컨벤션 위반을 우선순위별로 분석합니다. /review 커맨드에서 호출됩니다.
+description: 코드 리뷰 전문가. 코드 변경 후 리뷰 요청 시 적극적으로 활용합니다 (use proactively). 성능, 접근성, React Hooks 규칙, 타입 안전성, 프로젝트 컨벤션 위반을 우선순위별로 분석합니다.
 tools: Read, Glob, Grep
 model: sonnet
 ---

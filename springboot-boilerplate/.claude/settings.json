@@ -2,40 +2,50 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.danvega.dev)",
       "WebFetch(domain:javadoc.io)",
-      "WebFetch(domain:docs.openrewrite.org)",
-      "Bash(./gradlew compileJava:*)",
-      "Bash(./gradlew checkstyleMain pmdMain:*)",
-      "Bash(jar tf:*)",
-      "Bash(jar xf:*)",
-      "Bash(javap:*)",
-      "Bash(./gradlew checkstyleMain:*)",
-      "Bash(python3:*)",
       "WebFetch(domain:docs.pmd-code.org)",
-      "Bash(./gradlew build:*)",
-      "mcp__jetbrains__list_directory_tree",
-      "mcp__jetbrains__get_file_text_by_path",
-      "mcp__jetbrains__find_files_by_glob",
-      "mcp__jetbrains__get_file_problems",
-      "mcp__jetbrains__build_project",
-      "mcp__jetbrains__find_files_by_name_keyword",
-      "mcp__jetbrains__execute_terminal_command",
-      "Bash(./gradlew clean test:*)",
-      "Bash(claude mcp list:*)",
-      "mcp__jetbrains__reformat_file",
-      "WebSearch",
       "WebFetch(domain:docs.spring.io)",
       "WebFetch(domain:spring.io)",
       "WebFetch(domain:mybatis.org)",
       "WebFetch(domain:querydsl.com)",
       "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)",
+      "WebSearch",
+      "Bash(./gradlew compileJava:*)",
+      "Bash(./gradlew checkstyleMain:*)",
+      "Bash(./gradlew pmdMain:*)",
+      "Bash(./gradlew checkstyleMain pmdMain:*)",
+      "Bash(./gradlew build:*)",
       "Bash(./gradlew test:*)",
+      "Bash(./gradlew clean test:*)",
+      "Bash(jar tf:*)",
+      "Bash(jar xf:*)",
+      "Bash(javap:*)",
+      "Bash(python3:*)",
+      "mcp__jetbrains__list_directory_tree",
+      "mcp__jetbrains__get_file_text_by_path",
+      "mcp__jetbrains__find_files_by_glob",
+      "mcp__jetbrains__find_files_by_name_keyword",
+      "mcp__jetbrains__get_file_problems",
+      "mcp__jetbrains__build_project",
+      "mcp__jetbrains__execute_terminal_command",
+      "mcp__jetbrains__reformat_file",
       "mcp__jetbrains__create_new_file",
       "mcp__jetbrains__replace_text_in_file"
     ]
   },
   "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code needs your attention\" with title \"Claude Code\"' 2>/dev/null || notify-send 'Claude Code' 'Claude Code needs your attention' 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",

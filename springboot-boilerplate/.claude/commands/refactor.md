@@ -23,7 +23,7 @@ allowed-tools: ["Read", "Glob", "Grep", "Write", "Edit", "Bash"]
 
 ### 프로젝트 컨벤션 정합성
 
-상세 규칙: [naming-conventions.md](../docs/naming-conventions.md) | [api-response.md](../docs/api-response.md) | [commenting.md](../docs/commenting.md)
+상세 규칙: [naming-conventions.md](../rules/naming-conventions.md) | [api-response.md](../rules/api-response.md) | [commenting.md](../rules/commenting.md)
 
 - 네이밍: Controller/Service `getXXX`/`getXXXList`, Repository/Mapper `selectXXX`/`selectXXXList`
 - `@Transactional(readOnly = true)` / `@Transactional` 정확히 적용

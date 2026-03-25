@@ -18,8 +18,8 @@ model: sonnet
 
 리뷰 전 반드시 아래를 읽으세요:
 - 대상 파일 전체
-- `.claude/docs/naming-conventions.md`
-- `.claude/docs/api-response.md`
+- `.claude/rules/naming-conventions.md`
+- `.claude/rules/api-response.md`
 - 같은 패키지의 기존 구현체 (예: `auth/`, `user/` 패키지)
 
 파일을 읽은 후 **ultrathink**로 버그·성능·보안·컨벤션 전 항목을 심층 분석하세요.

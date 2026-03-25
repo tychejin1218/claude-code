@@ -3,7 +3,7 @@ name: vitest-gen
 description: Vitest 테스트 코드 자동 생성
 argument-hint: "[src/path/to/file.ts(x)]"
 disable-model-invocation: true
-allowed-tools: Read, Write, Bash, Glob, Grep, Edit, Task
+allowed-tools: Read, Write, Bash, Glob, Grep, Edit, Agent
 ---
 
 # /vitest-gen — Vitest 테스트 코드 자동 생성 스킬
